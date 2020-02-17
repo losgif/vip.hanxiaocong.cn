@@ -1,0 +1,251 @@
+<template>
+  <div>
+    <div class="step-form-style-desc">
+      <div class="rule center">
+        <span style="color: red; display:block;padding-top: 20px;font-size:16px;">
+          脱单上墙交友报名
+        </span>
+      </div>
+      <div class="rule">
+        <span>以下信息为交友男/女嘉宾本人填写,也可以为朋友代发（但是必须是交友本人授权填写），工作人员会扫描二维码添加此童鞋进行核实！因为报名人数较多，按照报名顺序依次且择优发布，⚠️工作人员添加微信好友告知发布安排，请报名者耐心等待！</span>
+      </div>
+      <div class="rule">
+        <span>温馨提示：因为填写内容会进行公开发表在公众号，所以如果出现以下情况，⚠️将不会发布⚠️，谢谢理解！</span>
+      </div>
+      <div class="rule">
+        <span>⚠️1.填写内容随意/不达要求!</span>
+        <div class="rule_o">
+          <span class="rule_t">⚠️2.照片模糊，面部不清楚</span>
+          <span class="rule_t">⚠️3.合照不P掉无关人员的同样无效</span>
+          <span class="rule_t">⚠️4.照片美颜、PS严重</span>
+          <span class="rule_t">⚠️5.构图角度怪异、配色灰暗、入镜杂物多等</span>
+          <span class="rule_t">⚠️6.照片数量不少于7张（多多益善），建议自拍和全身照以及生活照都有</span>
+          <span class="rule_t">⚠️7.在写个人介绍和交友需求的时候可以多写一些，敷衍了事的一律不通过</span>
+          <span class="rule_t">！！！请确保你的信息不会出现以上现象后再进行填写（仅一次填写机会，提交后不可更改了，请仔细检查是否填写正确！）！！！</span>
+        </div>
+      </div>
+    </div>
+
+    <a-divider />
+
+    <a-form :form="form" style="max-width: 500px; margin: 40px auto 0;">
+      <a-form-item
+        label="姓名"
+        :labelCol="labelCol"
+        :wrapperCol="wrapperCol"
+      >
+        <a-input placeholder="姓名或昵称" v-decorator="['name', { initialValue: '', rules: [{required: true, message: '请填写姓名'}] }]"/>
+      </a-form-item>
+      <a-form-item
+        label="性别"
+        :labelCol="labelCol"
+        :wrapperCol="wrapperCol"
+      >
+        <a-radio-group v-decorator="['sex', { initialValue: 'male', rules: [{required: true, message: '请选择性别'}] }]">
+          <a-radio-button value="male">男</a-radio-button>
+          <a-radio-button value="female">女</a-radio-button>
+        </a-radio-group>
+      </a-form-item>
+      <a-form-item
+        label="联系方式"
+        :labelCol="labelCol"
+        :wrapperCol="wrapperCol"
+      >
+        <a-input placeholder="请保持微信号搜索正常，以免错过ta~" v-decorator="['contact_account', { initialValue: '', rules: [{required: true, message: '请填写联系方式'}] }]"/>
+      </a-form-item>
+      <a-form-item
+        label="教育背景"
+        :labelCol="labelCol"
+        :wrapperCol="wrapperCol"
+      >
+        <a-input placeholder="在读或毕业院校的全称及相应学历~" v-decorator="['university', { initialValue: '', rules: [{required: true, message: '请填写学校'}] }]"/>
+      </a-form-item>
+      <a-form-item
+        label="工作类型"
+        :labelCol="labelCol"
+        :wrapperCol="wrapperCol"
+      >
+        <a-input placeholder="例：互联网运营／公务员／学生／创业或者其他" v-decorator="['department', { initialValue: '', rules: [{required: true, message: '请填写工作类型'}] }]"/>
+      </a-form-item>
+      <a-form-item
+        label="身高"
+        :labelCol="labelCol"
+        :wrapperCol="wrapperCol"
+      >
+        <a-input placeholder="身高（单位：CM）" suffix="CM" v-decorator="['height', { initialValue: '', rules: [{required: true, message: '请填写身高'}] }]"/>
+      </a-form-item>
+      <a-form-item
+        label="星座"
+        :labelCol="labelCol"
+        :wrapperCol="wrapperCol"
+      >
+        <a-select
+          placeholder="选择你自己的星座"
+          v-decorator="['constellation', { rules: [{required: true, message: '请选择星座'}] }]">
+          <a-select-option value="白羊座">白羊座</a-select-option>
+          <a-select-option value="金牛座">金牛座</a-select-option>
+          <a-select-option value="双子座">双子座</a-select-option>
+          <a-select-option value="巨蟹座">巨蟹座</a-select-option>
+          <a-select-option value="狮子座">狮子座</a-select-option>
+          <a-select-option value="处女座">处女座</a-select-option>
+          <a-select-option value="天秤座">天秤座</a-select-option>
+          <a-select-option value="天蝎座">天蝎座</a-select-option>
+          <a-select-option value="射手座">射手座</a-select-option>
+          <a-select-option value="摩羯座">摩羯座</a-select-option>
+          <a-select-option value="水瓶座">水瓶座</a-select-option>
+          <a-select-option value="双鱼座">双鱼座</a-select-option>
+        </a-select>
+      </a-form-item>
+      <a-form-item
+        label="产地"
+        :labelCol="labelCol"
+        :wrapperCol="wrapperCol"
+      >
+        <a-input placeholder="填写你的出生地或者成长地" v-decorator="['origin', { initialValue: '', rules: [{required: true, message: '请填写产地'}] }]"/>
+      </a-form-item>
+      <a-form-item
+        label="期望发展城市"
+        :labelCol="labelCol"
+        :wrapperCol="wrapperCol"
+      >
+        <a-input placeholder="乱填可能会减少上镜的几率哦" v-decorator="['weibo', { initialValue: '', rules: [{required: true, message: '请填写期望发展城市'}] }]"/>
+      </a-form-item>
+      <a-form-item
+        label="目前活动范围"
+        :labelCol="labelCol"
+        :wrapperCol="wrapperCol"
+      >
+        <a-input placeholder="如XX市XX区或者XX大学" v-decorator="['specialty', { initialValue: '', rules: [{required: true, message: '请填写目前活动范围'}] }]"/>
+      </a-form-item>
+      <a-form-item
+        label="个人照片"
+        :labelCol="labelCol"
+        :wrapperCol="wrapperCol"
+      >
+        <a-upload
+          v-decorator="[
+            'person_image',
+            {
+              initialValue: [],
+              rules: [{required: true, message: '请上传个人照片'}],
+              valuePropName: 'fileList',
+              getValueFromEvent: normFile,
+            },
+          ]"
+          name="image"
+          :customRequest="customRequest"
+          @change="handleChange"
+          list-type="picture"
+        >
+          <a-button> <a-icon type="upload" /> 点击上传 </a-button>
+        </a-upload>
+      </a-form-item>
+      <a-form-item class="center">
+        <a-button type="primary" @click="nextStep">下一步</a-button>
+      </a-form-item>
+    </a-form>
+  </div>
+</template>
+
+<script>
+import { uploadImage } from '@/api/upload'
+
+export default {
+  name: 'Step1',
+  data () {
+    return {
+      labelCol: { lg: { span: 5 }, sm: { span: 5 } },
+      wrapperCol: { lg: { span: 19 }, sm: { span: 19 } },
+      form: this.$form.createForm(this)
+    }
+  },
+  props: {
+    formData: {
+      type: Object,
+      required: true
+    }
+  },
+  mounted () {
+    setTimeout(() => {
+      this.form.setFieldsValue(this.formData)
+    }, 100)
+  },
+  methods: {
+    normFile (e) {
+      let fileList = [...e.fileList]
+
+      // 1. Limit the number of uploaded files
+      //    Only to show two recent uploaded files, and old ones will be replaced by the new
+      fileList = fileList.slice(-1)
+
+      // 2. read from response and show file link
+      fileList = fileList.map(file => {
+        if (file.response) {
+          // Component will show file.url as link
+          file.url = file.response
+        }
+        return file
+      })
+
+      e.fileList = fileList
+
+      return e && e.fileList
+    },
+    customRequest (i) {
+      var file = new FormData()
+      file.append('name', i.file.name)
+      file.append(i.filename, i.file)
+      uploadImage(file)
+        .then(res => {
+          i.onSuccess(res)
+        })
+        .catch(e => {
+          console.log(e)
+          i.onError()
+        })
+    },
+    handleChange (info) {
+      if (info.file.status === 'done') {
+        this.$message.success(`${info.file.name} 素材上传成功`)
+
+        console.log(info)
+      } else if (info.file.status === 'error') {
+        this.$message.error(`${info.file.name} 素材上传失败`)
+      }
+    },
+    nextStep () {
+      const { form: { validateFields } } = this
+      // 先校验，通过表单校验后，才进入下一步
+      validateFields((err, values) => {
+        if (!err) {
+          this.$emit('nextStep', 1, values)
+        }
+      })
+    }
+  }
+}
+</script>
+
+<style lang="less" scoped>
+.step-form-style-desc {
+  color: rgba(0,0,0,.45);
+
+  .rule{
+    display: block;
+    margin: 20px 20px 20px 0;
+    font-size: 14px;
+  }
+  .rule_o{
+    display: block;
+  }
+  .rule_t{
+    display: block;
+    margin-top: 10px;
+    // background-color: black;
+    // color: white;
+  }
+}
+.center {
+  text-align: center;
+}
+</style>

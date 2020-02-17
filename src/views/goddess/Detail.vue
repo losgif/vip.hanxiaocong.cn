@@ -1,0 +1,367 @@
+<template>
+  <a-card :bordered="false">
+    <div class="table-page-search-wrapper">
+      <a-form layout="inline">
+        <a-row :gutter="48">
+          <a-col :md="8" :sm="24">
+            <a-form-item label="规则编号">
+              <a-input v-model="queryParam.id" placeholder=""/>
+            </a-form-item>
+          </a-col>
+          <a-col :md="8" :sm="24">
+            <a-form-item label="使用状态">
+              <a-select v-model="queryParam.status" placeholder="请选择" default-value="0">
+                <a-select-option value="0">全部</a-select-option>
+                <a-select-option value="1">关闭</a-select-option>
+                <a-select-option value="2">运行中</a-select-option>
+              </a-select>
+            </a-form-item>
+          </a-col>
+          <template v-if="advanced">
+            <a-col :md="8" :sm="24">
+              <a-form-item label="调用次数">
+                <a-input-number v-model="queryParam.callNo" style="width: 100%"/>
+              </a-form-item>
+            </a-col>
+            <a-col :md="8" :sm="24">
+              <a-form-item label="更新日期">
+                <a-date-picker v-model="queryParam.date" style="width: 100%" placeholder="请输入更新日期"/>
+              </a-form-item>
+            </a-col>
+            <a-col :md="8" :sm="24">
+              <a-form-item label="使用状态">
+                <a-select v-model="queryParam.useStatus" placeholder="请选择" default-value="0">
+                  <a-select-option value="0">全部</a-select-option>
+                  <a-select-option value="1">关闭</a-select-option>
+                  <a-select-option value="2">运行中</a-select-option>
+                </a-select>
+              </a-form-item>
+            </a-col>
+            <a-col :md="8" :sm="24">
+              <a-form-item label="使用状态">
+                <a-select placeholder="请选择" default-value="0">
+                  <a-select-option value="0">全部</a-select-option>
+                  <a-select-option value="1">关闭</a-select-option>
+                  <a-select-option value="2">运行中</a-select-option>
+                </a-select>
+              </a-form-item>
+            </a-col>
+          </template>
+          <a-col :md="!advanced && 8 || 24" :sm="24">
+            <span class="table-page-search-submitButtons" :style="advanced && { float: 'right', overflow: 'hidden' } || {} ">
+              <a-button type="primary" @click="$refs.table.refresh(true)">查询</a-button>
+              <a-button style="margin-left: 8px" @click="() => queryParam = {}">重置</a-button>
+              <a @click="toggleAdvanced" style="margin-left: 8px">
+                {{ advanced ? '收起' : '展开' }}
+                <a-icon :type="advanced ? 'up' : 'down'"/>
+              </a>
+            </span>
+          </a-col>
+        </a-row>
+      </a-form>
+    </div>
+
+    <div class="table-operator">
+      <a-button type="dashed" @click="tableOption">{{ optionAlertShow && '关闭' || '开启' }} alert</a-button>
+      <a-dropdown v-action:edit v-if="selectedRowKeys.length > 0">
+        <a-menu slot="overlay">
+          <a-menu-item key="1"><a-icon type="delete" />删除</a-menu-item>
+          <!-- lock | unlock -->
+          <a-menu-item key="2"><a-icon type="lock" />锁定</a-menu-item>
+        </a-menu>
+        <a-button style="margin-left: 8px">
+          批量操作 <a-icon type="down" />
+        </a-button>
+      </a-dropdown>
+    </div>
+
+    <s-table
+      ref="table"
+      rowKey="id"
+      :columns="columns"
+      :data="loadData"
+      :alert="options.alert"
+      :rowSelection="options.rowSelection"
+      showPagination="auto"
+      :scroll="{ x: 2000 }"
+    >
+      <span slot="status" slot-scope="text">
+        <a-badge :status="text | statusTypeFilter" :text="text | statusFilter" />
+      </span>
+      <span slot="contact_account" slot-scope="text">
+        <ellipsis :length="11" tooltip>{{ text }}</ellipsis>
+      </span>
+      <span slot="specialty" slot-scope="text">
+        <ellipsis :length="20" tooltip>{{ text }}</ellipsis>
+      </span>
+      <span slot="department" slot-scope="text">
+        <ellipsis :length="20" tooltip>{{ text }}</ellipsis>
+      </span>
+      <span slot="sex" slot-scope="text">
+        <a-badge :status="text | sexTypeFilter" :text="text | sexFilter" />
+      </span>
+      <span slot="person_image" slot-scope="text">
+        <a-avatar shape="square" :size="64" :src="text"/>
+      </span>
+
+      <span slot="action" slot-scope="text, record">
+        <template>
+          <a @click="handleEdit(record)">编辑</a>
+          <a-divider type="vertical" />
+          <a @click="handleGenerate(record)">生成</a>
+        </template>
+      </span>
+    </s-table>
+    <a-modal
+      title="生成样式"
+      v-model="visible"
+      width="80%"
+      :bodyStyle="{height: '60vh'}"
+      :maskClosable="false"
+      :footer="footer">
+      <template slot="footer">
+        <a-button type="primary" id="copyButton" data-clipboard-target="#copyTarget">复制</a-button>
+      </template>
+      <iframe
+        id="copyTarget"
+        :src="'https://test.losgif.com/open?array=[' + this.showId + ']'"
+        height="100%"
+        width="100%"
+        frameborder="0">
+      </iframe>
+    </a-modal>
+    <step-by-step-modal ref="editModal" @ok="handleOk"/>
+  </a-card>
+</template>
+
+<script>
+import moment from 'moment'
+import { STable, Ellipsis } from '@/components'
+import { getRoleList } from '@/api/manage'
+import { informationIndexByApplicationId } from '@/api/information'
+import Clipboard from 'clipboard'
+import StepByStepModal from './modules/StepByStepModal'
+
+const statusMap = {
+  0: {
+    status: 'success',
+    text: '未生成'
+  },
+  1: {
+    status: 'error',
+    text: '已生成'
+  }
+}
+
+const sexMap = {
+  'male': {
+    status: 'default',
+    text: '男'
+  },
+  'female': {
+    status: 'success',
+    text: '女'
+  }
+}
+
+export default {
+  name: 'TableList',
+  components: {
+    STable,
+    Ellipsis,
+    StepByStepModal
+  },
+  data () {
+    return {
+      visible: false,
+      showId: 0,
+      mdl: {},
+      // 高级搜索 展开/关闭
+      advanced: false,
+      // 查询参数
+      queryParam: {},
+      // 表头
+      columns: [
+        {
+          title: 'ID',
+          dataIndex: 'id'
+        },
+        {
+          title: '姓名',
+          dataIndex: 'name'
+        },
+        {
+          title: '状态',
+          dataIndex: 'is_active',
+          scopedSlots: { customRender: 'status' }
+        },
+        {
+          title: '性别',
+          dataIndex: 'sex',
+          scopedSlots: { customRender: 'sex' }
+        },
+        {
+          title: '联系方式',
+          dataIndex: 'contact_account',
+          scopedSlots: { customRender: 'contact_account' }
+        },
+        {
+          title: '个人照片',
+          dataIndex: 'person_image',
+          scopedSlots: { customRender: 'person_image' }
+        },
+        {
+          title: '学校',
+          dataIndex: 'university'
+        },
+        {
+          title: '座右铭',
+          dataIndex: 'department',
+          scopedSlots: { customRender: 'department' }
+        },
+        {
+          title: '身高',
+          dataIndex: 'height',
+          customRender: (text) => text + 'CM'
+        },
+        {
+          title: '星座',
+          dataIndex: 'constellation'
+        },
+        {
+          title: '产地',
+          dataIndex: 'origin'
+        },
+        {
+          title: '微博',
+          dataIndex: 'weibo'
+        },
+        {
+          title: '特长',
+          dataIndex: 'specialty',
+          scopedSlots: { customRender: 'specialty' }
+        },
+        {
+          title: '更新时间',
+          dataIndex: 'updated_at',
+          sorter: true
+        },
+        {
+          title: '操作',
+          dataIndex: 'action',
+          width: '120px',
+          scopedSlots: { customRender: 'action' },
+          fixed: 'right'
+        }
+      ],
+      // 加载数据方法 必须为 Promise 对象
+      loadData: parameter => {
+        const id = this.$route.params.id
+
+        return informationIndexByApplicationId(Object.assign(parameter, this.queryParam, { id: id }))
+          .then(res => {
+            if (res.code === 200) {
+              return res.data
+            }
+          })
+      },
+      selectedRowKeys: [],
+      selectedRows: [],
+
+      // custom table alert & rowSelection
+      options: {
+        alert: { show: true, clear: () => { this.selectedRowKeys = [] } },
+        rowSelection: {
+          selectedRowKeys: this.selectedRowKeys,
+          onChange: this.onSelectChange
+        }
+      },
+      optionAlertShow: false
+    }
+  },
+  filters: {
+    statusFilter (type) {
+      return statusMap[type].text
+    },
+    statusTypeFilter (type) {
+      return statusMap[type].status
+    },
+    sexFilter (type) {
+      return sexMap[type].text
+    },
+    sexTypeFilter (type) {
+      return sexMap[type].status
+    }
+  },
+  created () {
+    this.tableOption()
+    getRoleList({ t: new Date() })
+  },
+  mounted () {
+    this.initClipboard()
+  },
+  methods: {
+    tableOption () {
+      if (!this.optionAlertShow) {
+        this.options = {
+          alert: { show: true, clear: () => { this.selectedRowKeys = [] } },
+          rowSelection: {
+            selectedRowKeys: this.selectedRowKeys,
+            onChange: this.onSelectChange,
+            getCheckboxProps: record => ({
+              props: {
+                disabled: record.no === 'No 2', // Column configuration not to be checked
+                name: record.no
+              }
+            })
+          }
+        }
+        this.optionAlertShow = true
+      } else {
+        this.options = {
+          alert: false,
+          rowSelection: null
+        }
+        this.optionAlertShow = false
+      }
+    },
+
+    initClipboard () {
+      const clipboard = new Clipboard('#copyButton')
+
+      clipboard.on('success', e => {
+        this.$message.warning(`开发中，请手动复制`)
+
+        console.log('success:', e)
+      })
+
+      clipboard.on('error', e => {
+        console.log('error:', e)
+      })
+    },
+
+    handleEdit (record) {
+      this.$refs.editModal.edit(record)
+    },
+    handleGenerate (record) {
+      this.visible = true
+      this.showId = record.id
+    },
+    handleOk () {
+      this.$refs.table.refresh()
+    },
+    onSelectChange (selectedRowKeys, selectedRows) {
+      this.selectedRowKeys = selectedRowKeys
+      this.selectedRows = selectedRows
+    },
+    toggleAdvanced () {
+      this.advanced = !this.advanced
+    },
+    resetSearchForm () {
+      this.queryParam = {
+        date: moment(new Date())
+      }
+    }
+  }
+}
+</script>
