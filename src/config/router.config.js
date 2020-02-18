@@ -464,11 +464,10 @@ export const constantRouterMap = [
   {
     path: '/information',
     hidden: true,
-    redirect: '/information/:id/:token',
     component: BlankLayout,
     children: [
       {
-        path: '/information/:id/:token',
+        path: '/information/:id/:token/:type',
         name: 'information',
         component: () => import('@/views/information/Detail'),
         meta: { title: '联系方式' }
@@ -479,7 +478,6 @@ export const constantRouterMap = [
   {
     path: '/roommate',
     hidden: true,
-    redirect: '/roommate/home/:id',
     component: SubmitLayout,
     children: [
       {
@@ -494,7 +492,6 @@ export const constantRouterMap = [
   {
     path: '/goddess',
     hidden: true,
-    redirect: '/goddess/home/:id',
     component: SubmitLayout,
     children: [
       {
@@ -509,7 +506,6 @@ export const constantRouterMap = [
   {
     path: '/single',
     hidden: true,
-    redirect: '/single/home/:id',
     component: SubmitLayout,
     children: [
       {
