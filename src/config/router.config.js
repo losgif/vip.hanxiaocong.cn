@@ -21,22 +21,40 @@ export const asyncRouterMap = [
         meta: { title: '仪表盘', keepAlive: true, icon: bxAnaalyse, permission: [ 'dashboard' ] },
         children: [
           {
-            path: '/dashboard/analysis',
-            name: 'Analysis',
-            component: () => import('@/views/dashboard/Analysis'),
-            meta: { title: '分析页', keepAlive: false, permission: [ 'dashboard' ] }
-          },
-          {
             path: '/dashboard/workplace',
             name: 'Workplace',
             component: () => import('@/views/dashboard/Workplace'),
             meta: { title: '工作台', keepAlive: true, permission: [ 'dashboard' ] }
           },
           {
+            path: '/dashboard/analysis',
+            name: 'Analysis',
+            component: () => import('@/views/dashboard/Analysis'),
+            hidden: true,
+            meta: { title: '分析页', keepAlive: false, permission: [ 'dashboard' ] }
+          },
+          {
             path: '/dashboard/test-work',
             name: 'TestWork',
             component: () => import('@/views/dashboard/TestWork'),
+            hidden: true,
             meta: { title: '测试功能', keepAlive: true, permission: [ 'dashboard' ] }
+          }
+        ]
+      },
+
+      // application
+      {
+        path: '/application',
+        redirect: '/application/my',
+        component: PageView,
+        meta: { title: '应用列表', icon: 'form', permission: [ 'application' ] },
+        children: [
+          {
+            path: '/application/my',
+            name: 'ApplicationIndex',
+            component: () => import('@/views/application/My'),
+            meta: { title: '我的应用', keepAlive: true, permission: [ 'application' ] }
           }
         ]
       },
@@ -44,22 +62,35 @@ export const asyncRouterMap = [
       // goddess
       {
         path: '/goddess',
-        redirect: '/goddess/index',
+        redirect: '/goddess/:id',
         component: PageView,
-        meta: { title: '男神女神', icon: 'form', permission: [ 'goddess' ] },
+        hidden: true,
+        meta: { title: '男神女神', icon: 'form', permission: [ 'application' ] },
         children: [
-          {
-            path: '/goddess/index',
-            name: 'GoddessIndex',
-            component: () => import('@/views/form/advancedForm/AdvancedForm'),
-            meta: { title: '应用列表', keepAlive: true, permission: [ 'goddess' ] }
-          },
           {
             path: '/goddess/:id',
             name: 'GoddessDetail',
             hidden: true,
             component: () => import('@/views/goddess/Detail'),
-            meta: { title: '应用详情', keepAlive: true, permission: [ 'goddess' ] }
+            meta: { title: '应用详情', keepAlive: true, permission: [ 'application' ] }
+          }
+        ]
+      },
+
+      // rommate
+      {
+        path: '/roommate',
+        redirect: '/roommate/:id',
+        component: PageView,
+        hidden: true,
+        meta: { title: '卖舍友', icon: 'form', permission: [ 'application' ] },
+        children: [
+          {
+            path: '/roommate/:id',
+            name: 'GoddessDetail',
+            hidden: true,
+            component: () => import('@/views/roommate/Detail'),
+            meta: { title: '应用详情', keepAlive: true, permission: [ 'application' ] }
           }
         ]
       },
@@ -69,6 +100,7 @@ export const asyncRouterMap = [
         path: '/form',
         redirect: '/form/base-form',
         component: PageView,
+        hidden: true,
         meta: { title: '表单页', icon: 'form', permission: [ 'form' ] },
         children: [
           {
@@ -97,6 +129,7 @@ export const asyncRouterMap = [
         path: '/list',
         name: 'list',
         component: PageView,
+        hidden: true,
         redirect: '/list/table-list',
         meta: { title: '列表页', icon: 'table', permission: [ 'table' ] },
         children: [
@@ -154,6 +187,7 @@ export const asyncRouterMap = [
         path: '/profile',
         name: 'profile',
         component: RouteView,
+        hidden: true,
         redirect: '/profile/basic',
         meta: { title: '详情页', icon: 'profile', permission: [ 'profile' ] },
         children: [
@@ -177,6 +211,7 @@ export const asyncRouterMap = [
         path: '/result',
         name: 'result',
         component: PageView,
+        hidden: true,
         redirect: '/result/success',
         meta: { title: '结果页', icon: 'check-circle-o', permission: [ 'result' ] },
         children: [
@@ -200,6 +235,7 @@ export const asyncRouterMap = [
         path: '/exception',
         name: 'exception',
         component: RouteView,
+        hidden: true,
         redirect: '/exception/403',
         meta: { title: '异常页', icon: 'warning', permission: [ 'exception' ] },
         children: [
@@ -228,6 +264,7 @@ export const asyncRouterMap = [
       {
         path: '/account',
         component: RouteView,
+        hidden: true,
         redirect: '/account/center',
         name: 'account',
         meta: { title: '个人页', icon: 'user', keepAlive: true, permission: [ 'user' ] },
@@ -286,6 +323,7 @@ export const asyncRouterMap = [
         path: '/other',
         name: 'otherPage',
         component: PageView,
+        hidden: true,
         meta: { title: '其他组件', icon: 'slack', permission: [ 'dashboard' ] },
         redirect: '/other/icon-selector',
         children: [
@@ -344,6 +382,44 @@ export const asyncRouterMap = [
     ]
   },
   {
+    path: '/weixiao',
+    name: 'weixiao',
+    component: SubmitLayout,
+    meta: { title: '腾讯微笑' },
+    children: [
+      {
+        path: '/weixiao/goddess',
+        component: PageView,
+        hidden: true,
+        meta: { title: '男神女神', icon: 'form', permission: [ 'application' ] },
+        children: [
+          {
+            path: '/weixiao/goddess/:id',
+            name: 'WeixiaoGoddessDetail',
+            hidden: true,
+            component: () => import('@/views/goddess/Detail'),
+            meta: { title: '应用详情', keepAlive: true, permission: [ 'goddess' ], hiddenHeaderContent: true }
+          }
+        ]
+      },
+      {
+        path: '/weixiao/roommate',
+        component: PageView,
+        hidden: true,
+        meta: { title: '卖舍友', icon: 'form', permission: [ 'application' ] },
+        children: [
+          {
+            path: '/weixiao/roommate/:id',
+            name: 'WeixiaoRoommateDetail',
+            hidden: true,
+            component: () => import('@/views/roommate/Detail'),
+            meta: { title: '应用详情', keepAlive: true, permission: [ 'roommate' ], hiddenHeaderContent: true }
+          }
+        ]
+      }
+    ]
+  },
+  {
     path: '*', redirect: '/404', hidden: true
   }
 ]
@@ -362,17 +438,20 @@ export const constantRouterMap = [
       {
         path: 'login',
         name: 'login',
-        component: () => import(/* webpackChunkName: "user" */ '@/views/user/Login')
+        component: () => import(/* webpackChunkName: "user" */ '@/views/user/Login'),
+        meta: { title: '登录' }
       },
       {
         path: 'register',
         name: 'register',
-        component: () => import(/* webpackChunkName: "user" */ '@/views/user/Register')
+        component: () => import(/* webpackChunkName: "user" */ '@/views/user/Register'),
+        meta: { title: '注册' }
       },
       {
         path: 'register-result',
         name: 'registerResult',
-        component: () => import(/* webpackChunkName: "user" */ '@/views/user/RegisterResult')
+        component: () => import(/* webpackChunkName: "user" */ '@/views/user/RegisterResult'),
+        meta: { title: '注册结果' }
       },
       {
         path: 'recover',
@@ -391,7 +470,23 @@ export const constantRouterMap = [
       {
         path: '/information/:id/:token',
         name: 'information',
-        component: () => import('@/views/information/Detail')
+        component: () => import('@/views/information/Detail'),
+        meta: { title: '联系方式' }
+      }
+    ]
+  },
+
+  {
+    path: '/roommate',
+    hidden: true,
+    redirect: '/roommate/home/:id',
+    component: SubmitLayout,
+    children: [
+      {
+        path: '/roommate/home/:id',
+        name: 'roommate',
+        component: () => import('@/views/roommate/Home'),
+        meta: { title: '卖舍友' }
       }
     ]
   },
@@ -405,7 +500,8 @@ export const constantRouterMap = [
       {
         path: '/goddess/home/:id',
         name: 'goddess',
-        component: () => import('@/views/goddess/Home')
+        component: () => import('@/views/goddess/Home'),
+        meta: { title: '男神女神' }
       }
     ]
   },
@@ -419,7 +515,8 @@ export const constantRouterMap = [
       {
         path: '/single/home/:id',
         name: 'single',
-        component: () => import('@/views/single/Home')
+        component: () => import('@/views/single/Home'),
+        meta: { title: '单身' }
       }
     ]
   },
@@ -427,19 +524,22 @@ export const constantRouterMap = [
   {
     path: '/404',
     name: '404',
-    component: () => import(/* webpackChunkName: "fail" */ '@/views/exception/404')
+    component: () => import(/* webpackChunkName: "fail" */ '@/views/exception/404'),
+    meta: { title: '页面不存在' }
   },
 
   {
     path: '/403',
     name: '403',
-    component: () => import(/* webpackChunkName: "fail" */ '@/views/exception/403')
+    component: () => import(/* webpackChunkName: "fail" */ '@/views/exception/403'),
+    meta: { title: '页面未授权' }
   },
 
   {
     path: '/500',
     name: '500',
-    component: () => import(/* webpackChunkName: "fail" */ '@/views/exception/500')
+    component: () => import(/* webpackChunkName: "fail" */ '@/views/exception/500'),
+    meta: { title: '页面错误' }
   }
 
 ]

@@ -63,14 +63,15 @@
 
     <div class="table-operator">
       <a-button v-if="$route.meta.hiddenHeaderContent">
-        <router-link target="_blank" :to="'/goddess/' + $route.params.id">在新窗口打开此页面</router-link>
+        <router-link target="_blank" :to="'/roommate/' + $route.params.id">在新窗口打开此页面</router-link>
       </a-button>
       <a-button type="primary">
-        <router-link target="_blank" :to="'/goddess/home/' + $route.params.id">打开信息提交页面</router-link>
+        <router-link target="_blank" :to="'/roommate/home/' + $route.params.id">打开信息提交页面</router-link>
       </a-button>
       <!-- <a-button type="dashed">
-        <router-link :to="'/goddess/setting/' + $route.params.id">应用配置</router-link>
+        <router-link :to="'/roommate/setting/' + $route.params.id">应用配置</router-link>
       </a-button> -->
+      <a-button @click="handleGenerate" v-if="selectedRowKeys.length > 0">生成样式</a-button>
       <a-dropdown v-action:edit v-if="selectedRowKeys.length > 0">
         <a-menu slot="overlay">
           <a-menu-item key="1" @click="handleDelete"><a-icon type="delete"/>删除</a-menu-item>
@@ -94,13 +95,16 @@
       <span slot="status" slot-scope="text">
         <a-badge :status="text | statusTypeFilter" :text="text | statusFilter" />
       </span>
-      <span slot="contact_account" slot-scope="text">
+      <span slot="ta_contact_account" slot-scope="text">
         <ellipsis :length="11" tooltip>{{ text }}</ellipsis>
       </span>
       <span slot="specialty" slot-scope="text">
         <ellipsis :length="20" tooltip>{{ text }}</ellipsis>
       </span>
-      <span slot="department" slot-scope="text">
+      <span slot="expectation" slot-scope="text">
+        <ellipsis :length="20" tooltip>{{ text }}</ellipsis>
+      </span>
+      <span slot="your_contact_account" slot-scope="text">
         <ellipsis :length="20" tooltip>{{ text }}</ellipsis>
       </span>
       <span slot="sex" slot-scope="text">
@@ -113,8 +117,6 @@
       <span slot="action" slot-scope="text, record">
         <template>
           <a @click="handleEdit(record)">编辑</a>
-          <a-divider type="vertical" />
-          <a @click="handleGenerate(record)">生成</a>
         </template>
       </span>
     </s-table>
@@ -202,7 +204,7 @@ export default {
         },
         {
           title: '姓名',
-          dataIndex: 'extra.name'
+          dataIndex: 'extra.ta_name'
         },
         {
           title: '状态',
@@ -216,8 +218,8 @@ export default {
         },
         {
           title: '联系方式',
-          dataIndex: 'extra.contact_account',
-          scopedSlots: { customRender: 'contact_account' }
+          dataIndex: 'extra.ta_contact_account',
+          scopedSlots: { customRender: 'ta_contact_account' }
         },
         {
           title: '个人照片',
@@ -230,8 +232,8 @@ export default {
         },
         {
           title: '座右铭',
-          dataIndex: 'extra.department',
-          scopedSlots: { customRender: 'department' }
+          dataIndex: 'extra.your_contact_account',
+          scopedSlots: { customRender: 'your_contact_account' }
         },
         {
           title: '身高',
@@ -239,21 +241,18 @@ export default {
           customRender: (text) => text + 'CM'
         },
         {
-          title: '星座',
-          dataIndex: 'extra.constellation'
-        },
-        {
           title: '产地',
           dataIndex: 'extra.origin'
-        },
-        {
-          title: '微博',
-          dataIndex: 'extra.weibo'
         },
         {
           title: '特长',
           dataIndex: 'extra.specialty',
           scopedSlots: { customRender: 'specialty' }
+        },
+        {
+          title: '期望',
+          dataIndex: 'extra.expectation',
+          scopedSlots: { customRender: 'expectation' }
         },
         {
           title: '更新时间',
@@ -263,7 +262,7 @@ export default {
         {
           title: '操作',
           dataIndex: 'action',
-          width: '120px',
+          width: '60px',
           scopedSlots: { customRender: 'action' },
           fixed: 'right'
         }
@@ -414,8 +413,12 @@ export default {
       // this.$refs.editModal.edit(record)
     },
     handleGenerate (record) {
-      this.visible = true
-      this.showId = record.id
+      if (this.selectedRowKeys !== []) {
+        this.visible = true
+        this.showId = this.selectedRowKeys
+      } else {
+        this.$message.error('请选择数据后再继续操作')
+      }
     },
     handleOk () {
       this.$refs.table.refresh()

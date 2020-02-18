@@ -19,3 +19,11 @@ export function informationSearch (paramter) {
     data: paramter
   })
 }
+
+export function informationBatchDelete (data) {
+  return axios({
+    url: `${api.Information}/batchDelete`,
+    method: 'delete',
+    data
+  })
+}

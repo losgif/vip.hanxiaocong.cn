@@ -9,6 +9,7 @@
 
 <script>
 import LogoSvg from '@/assets/logo.svg?inline'
+import { domTitle } from '@/utils/domUtil'
 
 export default {
   name: 'Logo',
@@ -18,7 +19,7 @@ export default {
   props: {
     title: {
       type: String,
-      default: 'Ant Design Pro',
+      default: domTitle,
       required: false
     },
     showTitle: {

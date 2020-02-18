@@ -7,7 +7,7 @@ import { ACCESS_TOKEN } from '@/store/mutation-types'
 
 // 创建 axios 实例
 const service = axios.create({
-  baseURL: 'https://test.losgif.com' + process.env.VUE_APP_API_BASE_URL, // api base_url
+  baseURL: process.env.VUE_APP_API_BASE_URL, // api base_url
   timeout: 6000 // 请求超时时间
 })
 
@@ -17,14 +17,14 @@ const err = (error) => {
     const token = Vue.ls.get(ACCESS_TOKEN)
     if (error.response.status === 403) {
       notification.error({
-        message: 'Forbidden',
+        message: '禁止访问',
         description: data.message
       })
     }
     if (error.response.status === 401 && !(data.result && data.result.isLogin)) {
       notification.error({
-        message: 'Unauthorized',
-        description: 'Authorization verification failed'
+        message: '登录失败',
+        description: '登录账户失败，请联系管理员'
       })
       if (token) {
         store.dispatch('Logout').then(() => {
@@ -59,7 +59,29 @@ const installer = {
   }
 }
 
+const requestfailedHandle = (err) => {
+  if (((err.response || {}).data || {}).message instanceof Object) {
+    var message = ((err.response || {}).data || {}).message
+    for (const key in message) {
+      setTimeout(() => {
+        notification['error']({
+          message: '错误',
+          description: message[key] || '请求出现错误，请稍后再试',
+          duration: 3
+        })
+      }, 0)
+    }
+  } else {
+    notification['error']({
+      message: '错误',
+      description: ((err.response || {}).data || {}).message || '请求出现错误，请稍后再试',
+      duration: 3
+    })
+  }
+}
+
 export {
   installer as VueAxios,
-  service as axios
+  service as axios,
+  requestfailedHandle
 }

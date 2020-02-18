@@ -10,17 +10,24 @@ import { ACCESS_TOKEN } from '@/store/mutation-types'
 
 NProgress.configure({ showSpinner: false }) // NProgress Configuration
 
-const whiteList = ['login', 'register', 'registerResult', 'information', 'goddess', 'single', '403', '404', '500'] // no redirect whitelist
+const whiteList = ['login', 'register', 'registerResult', 'information', 'roommate', 'goddess', 'single', '403', '404', '500'] // no redirect whitelist
 const defaultRoutePath = '/dashboard/workplace'
 
 router.beforeEach((to, from, next) => {
   NProgress.start() // start progress bar
   to.meta && (typeof to.meta.title !== 'undefined' && setDocumentTitle(`${to.meta.title} - ${domTitle}`))
-  if (Vue.ls.get(ACCESS_TOKEN)) {
+  if (Vue.ls.get(ACCESS_TOKEN) && to.query.access_token === undefined) {
     /* has token */
     if (to.path === '/user/login') {
-      next({ path: defaultRoutePath })
-      NProgress.done()
+      const redirect = decodeURIComponent(to.query.redirect || to.path)
+
+      if (to.path === redirect) {
+        next({ path: defaultRoutePath })
+        NProgress.done()
+      } else {
+        next({ path: redirect })
+        NProgress.done()
+      }
     } else {
       if (store.getters.roles.length === 0) {
         store

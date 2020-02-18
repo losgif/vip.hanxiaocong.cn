@@ -10,10 +10,7 @@
           <head-info title="应用" :content="applications.length" :center="false" :bordered="false"/>
         </a-col>
         <a-col :span="8">
-          <head-info title="团队排名" content="8/24" :center="false" :bordered="false"/>
-        </a-col>
-        <a-col :span="8">
-          <head-info title="信息数" content="2223" :center="false" />
+          <head-info title="信息数" :content="informationCount" :center="false" />
         </a-col>
       </a-row>
     </div>
@@ -28,7 +25,7 @@
             :bordered="false"
             title="我的应用"
             :body-style="{ padding: 0 }">
-            <a slot="extra">添加应用</a>
+            <a slot="extra" @click="showDeveloping">添加应用</a>
             <div>
               <a-card-grid class="project-card-grid" :key="i" v-for="(item, i) in applications">
                 <a-card :bordered="false" :body-style="{ padding: 0 }">
@@ -42,7 +39,7 @@
                     </div>
                   </a-card-meta>
                   <div class="project-item">
-                    <router-link :to="'/goddess/' + item.id">管理</router-link>
+                    <router-link :to="'/' + item.type + '/' + item.id">管理</router-link>
                     <span class="datetime">{{ item.updated_at }}</span>
                   </div>
                 </a-card>
@@ -54,14 +51,14 @@
             <a-list>
               <a-list-item :key="index" v-for="(item, index) in activities">
                 <a-list-item-meta>
-                  <a-avatar slot="avatar" :src="item.logo" />
+                  <a-avatar slot="avatar" :src="item.extra.person_image" />
                   <div slot="title">
-                    <span>{{ item.name }}</span>&nbsp;
-                    在&nbsp;<a href="#">{{ item.description }}</a>&nbsp;
-                    <span>管理</span>&nbsp;
-                    <a href="#">删除</a>
+                    <span>{{ item.extra.name }}</span>&nbsp;
+                    在&nbsp;<router-link :to="'/' + item.application.type + '/' + item.application.id">{{ item.application.name }}</router-link>&nbsp;
+                    <span>应用中提交了信息，请尽快处理。</span>&nbsp;
+                    <router-link :to="'/' + item.application.type + '/' + item.application.id">立即处理</router-link>
                   </div>
-                  <div slot="description">{{ item.created_at }}</div>
+                  <div slot="description">{{ item.updated_at }}</div>
                 </a-list-item-meta>
               </a-list-item>
             </a-list>
@@ -76,22 +73,11 @@
           :xs="24">
           <a-card title="快速开始 / 便捷导航" style="margin-bottom: 24px" :bordered="false" :body-style="{padding: 0}">
             <div class="item-group">
-              <a>操作一</a>
-              <a>操作二</a>
-              <a>操作三</a>
-              <a>操作四</a>
-              <a>操作五</a>
-              <a>操作六</a>
-              <a-button size="small" type="primary" ghost icon="plus">添加</a-button>
+              <router-link to="/application">我的应用</router-link>
+              <a-button @click="showDeveloping" size="small" type="primary" ghost icon="plus">添加</a-button>
             </div>
           </a-card>
-          <a-card title="XX 指数" style="margin-bottom: 24px" :loading="radarLoading" :bordered="false" :body-style="{ padding: 0 }">
-            <div style="min-height: 400px;">
-              <!-- :scale="scale" :axis1Opts="axis1Opts" :axis2Opts="axis2Opts"  -->
-              <radar :data="radarData" />
-            </div>
-          </a-card>
-          <a-card :loading="loading" title="团队" :bordered="false">
+          <a-card :loading="loading" title="开发团队" :bordered="false">
             <div class="members">
               <a-row>
                 <a-col :span="12" v-for="(item, index) in teams" :key="index">
@@ -115,18 +101,14 @@ import { mapState } from 'vuex'
 
 import { PageView } from '@/layouts'
 import HeadInfo from '@/components/tools/HeadInfo'
-import { Radar } from '@/components'
 
 import { getRoleList, getServiceList } from '@/api/manage'
-
-const DataSet = require('@antv/data-set')
 
 export default {
   name: 'Workplace',
   components: {
     PageView,
-    HeadInfo,
-    Radar
+    HeadInfo
   },
   data () {
     return {
@@ -137,47 +119,23 @@ export default {
       applications: [],
       loading: true,
       activityLoading: true,
-      radarLoading: true,
       activities: [],
-      teams: [],
-
-      // data
-      axis1Opts: {
-        dataKey: 'item',
-        line: null,
-        tickLine: null,
-        grid: {
-          lineStyle: {
-            lineDash: null
-          },
-          hideFirstLine: false
-        }
+      teams: [{
+        id: 1,
+        name: 'losgif',
+        avatar: 'https://gw.alipayobjects.com/zos/rmsportal/BiazfanxmamNRoxxVxka.png'
       },
-      axis2Opts: {
-        dataKey: 'score',
-        line: null,
-        tickLine: null,
-        grid: {
-          type: 'polygon',
-          lineStyle: {
-            lineDash: null
-          }
-        }
+      {
+        id: 2,
+        name: '小葱',
+        avatar: 'https://gw.alipayobjects.com/zos/rmsportal/cnrhVkzwxjPwAaCfPbdc.png'
       },
-      scale: [{
-        dataKey: 'score',
-        min: 0,
-        max: 80
+      {
+        id: 3,
+        name: '卷卷酱',
+        avatar: 'https://gw.alipayobjects.com/zos/rmsportal/ubnKSIfAJTxIgXOKlciN.png'
       }],
-      axisData: [
-        { item: '引用', a: 70, b: 30, c: 40 },
-        { item: '口碑', a: 60, b: 70, c: 40 },
-        { item: '产量', a: 50, b: 60, c: 40 },
-        { item: '贡献', a: 40, b: 50, c: 40 },
-        { item: '热度', a: 60, b: 70, c: 40 },
-        { item: '引用', a: 70, b: 50, c: 40 }
-      ],
-      radarData: []
+      informationCount: 0
     }
   },
   computed: {
@@ -204,10 +162,12 @@ export default {
   mounted () {
     this.getProjects()
     this.getActivity()
-    this.getTeams()
-    this.initRadar()
+    this.getData()
   },
   methods: {
+    showDeveloping () {
+      this.$message.warning('施主莫急，程序猿小哥正在努力开发中。')
+    },
     getProjects () {
       this.$http.get('/workplace/applications')
         .then(res => {
@@ -222,27 +182,10 @@ export default {
           this.activityLoading = false
         })
     },
-    getTeams () {
-      this.$http.get('/workplace/teams')
+    getData () {
+      this.$http.get('/workplace/data')
         .then(res => {
-          this.teams = res.result
-        })
-    },
-    initRadar () {
-      this.radarLoading = true
-
-      this.$http.get('/workplace/radar')
-        .then(res => {
-          const dv = new DataSet.View().source(res.result)
-          dv.transform({
-            type: 'fold',
-            fields: ['个人', '团队', '部门'],
-            key: 'user',
-            value: 'score'
-          })
-
-          this.radarData = dv.rows
-          this.radarLoading = false
+          this.informationCount = res.data
         })
     }
   }

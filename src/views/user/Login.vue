@@ -156,6 +156,8 @@ export default {
   },
   mounted () {
     if (this.$route.query.access_token !== undefined) {
+      this.Logout()
+
       const accessToken = this.$route.query.access_token
 
       this.LoginByToken(accessToken)

@@ -8,8 +8,7 @@
       </a-steps>
       <div class="content">
         <step1 :form-data="form" v-if="currentTab === 0" @nextStep="nextStep"/>
-        <step2 :form-data="form" v-if="currentTab === 1" @nextStep="nextStep" @prevStep="prevStep"/>
-        <step3 v-if="currentTab === 2" @prevStep="prevStep" @finish="finish"/>
+        <step2 v-if="currentTab === 1" @prevStep="prevStep" @finish="finish"/>
       </div>
     </a-card>
   </div>
@@ -18,7 +17,6 @@
 <script>
 import Step1 from './Step1'
 import Step2 from './Step2'
-import Step3 from './Step3'
 import { uploadInfo } from '@/api/upload'
 import { requestfailedHandle } from '@/utils/request'
 
@@ -26,8 +24,7 @@ export default {
   name: 'StepForm',
   components: {
     Step1,
-    Step2,
-    Step3
+    Step2
   },
   data () {
     return {
@@ -39,7 +36,6 @@ export default {
   },
   mounted () {
     this.$store.dispatch('GetSite', this.$route.params.id)
-
     window.addEventListener('scroll', this.scrollToTop)
   },
   destroyed () {
@@ -49,10 +45,10 @@ export default {
     // handler
     nextStep (currentTab, values) {
       this.form = Object.assign(this.form, values)
+      this.$message.info(`正在上传信息`)
 
-      if (currentTab === 2) {
+      if (currentTab === 1) {
         this.form.school_application_id = this.$route.params.id
-        this.$message.info(`正在上传信息`)
 
         uploadInfo(this.form)
           .then(res => {
