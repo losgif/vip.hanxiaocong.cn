@@ -2,7 +2,7 @@
   <div>
     <div class="step-form-style-desc">
       <div class="rule center">
-        <span style="color: red; display:block;padding-top: 20px;font-size:16px;">
+        <span style="color: red; display:block;font-size:16px;">
           大型生活服务类节目游戏规则
         </span>
       </div>
@@ -21,6 +21,9 @@
           <span class="rule_t">⚠️5.构图角度怪异、配色灰暗、入镜杂物多等</span>
           <span class="rule_t">⚠️6.照片数量不少于7张（多多益善），建议自拍和全身照以及生活照都有</span>
         </div>
+      </div>
+      <div class="rule">
+        <span>本功能由小葱工作室开发，有问题请联系：ujnhand@qq.com</span>
       </div>
     </div>
 
@@ -129,14 +132,14 @@
             'person_image',
             {
               initialValue: [],
-              rules: [{required: true, message: '请上传个人照片', validator: validatorFile}],
+              rules: [{required: true, message: '请上传个人照片'}, {validator: validatorFile}],
               valuePropName: 'fileList',
               getValueFromEvent: normFile,
             },
           ]"
           name="image"
           @change="handleChange"
-          :customRequest="customRequest"
+          action="/api/upload/image"
           list-type="picture"
         >
           <a-button> <a-icon type="upload" /> 点击上传 </a-button>
@@ -150,8 +153,6 @@
 </template>
 
 <script>
-import { uploadImage } from '@/api/upload'
-
 export default {
   name: 'Step1',
   data () {
@@ -182,64 +183,34 @@ export default {
 
       // 2. read from response and show file link
       fileList = fileList.map(file => {
-        if (file.response) {
+        if (file.response !== undefined && file.response.code === 200) {
           // Component will show file.url as link
-          file.url = file.response
+          file.url = file.response.data
         }
         return file
       })
 
       e.fileList = fileList
 
-      return e && e.fileList
-    },
-    customRequest (i) {
-      var file = new FormData()
-      file.append('name', i.file.name)
-      file.append(i.filename, i.file)
-      uploadImage(file)
-        .then(res => {
-          this.$message.success(`${i.file.name} 素材上传成功`)
-          i.onSuccess(res)
-        })
-        .catch(e => {
-          this.requestFailed(e)
-          i.onError()
-        })
+      return e.fileList
     },
     handleChange (info) {
-      if (info.file.status === 'uploading') {
-        this.$message.info(`${info.file.name} 素材开始上传`)
+      if (info.file.status === 'done' || info.file.status === 'error') {
+        if (info.file.response.code === 200) {
+          this.$message.success(`${info.file.name} 素材上传成功`, 3)
+        } else {
+          this.$message.error('上传失败！' + info.file.response.message, 3)
+        }
       }
     },
     validatorFile (rule, value, callback) {
       try {
-        if (value[0].response === undefined) {
-          throw new Error('system errors')
+        if (value.length !== 0 && value[0].response !== undefined && value[0].response.code !== 200) {
+          throw new Error(value[0].response.message)
         }
         callback()
       } catch (err) {
-        callback(err)
-      }
-    },
-    requestFailed (err) {
-      if (((err.response || {}).data || {}).message instanceof Object) {
-        var message = ((err.response || {}).data || {}).message
-        for (const key in message) {
-          setTimeout(() => {
-            this.$notification['error']({
-              message: '错误',
-              description: message[key] || '请求出现错误，请稍后再试',
-              duration: 3
-            })
-          }, 0)
-        }
-      } else {
-        this.$notification['error']({
-          message: '错误',
-          description: ((err.response || {}).data || {}).message || '请求出现错误，请稍后再试',
-          duration: 3
-        })
+        callback(err.message)
       }
     },
     nextStep () {
@@ -261,7 +232,7 @@ export default {
 
   .rule{
     display: block;
-    margin: 20px 20px 20px 0;
+    margin: 0 20px 20px 0;
     font-size: 14px;
   }
   .rule_o{

@@ -14,9 +14,6 @@ export function uploadInfo (data) {
 
 export function uploadImage (data) {
   return axios({
-    headers: {
-      'Content-type': 'multipart/form-data'
-    },
     url: api.Upload + '/image',
     method: 'post',
     data: data

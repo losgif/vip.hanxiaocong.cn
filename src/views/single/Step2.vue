@@ -24,12 +24,14 @@
             v-decorator="[
               'question_image_1',
               {
+                initialValue: [],
+                rules: [{validator: validatorFile}],
                 valuePropName: 'fileList',
                 getValueFromEvent: normFile,
               },
             ]"
             name="image"
-            :customRequest="customRequest"
+            action="/api/upload/image"
             @change="handleChange"
             list-type="picture"
           >
@@ -56,12 +58,14 @@
             v-decorator="[
               'question_image_2',
               {
+                initialValue: [],
+                rules: [{validator: validatorFile}],
                 valuePropName: 'fileList',
                 getValueFromEvent: normFile,
               },
             ]"
             name="image"
-            :customRequest="customRequest"
+            action="/api/upload/image"
             @change="handleChange"
             list-type="picture"
           >
@@ -88,12 +92,14 @@
             v-decorator="[
               'question_image_3',
               {
+                initialValue: [],
+                rules: [{validator: validatorFile}],
                 valuePropName: 'fileList',
                 getValueFromEvent: normFile,
               },
             ]"
             name="image"
-            :customRequest="customRequest"
+            action="/api/upload/image"
             @change="handleChange"
             list-type="picture"
           >
@@ -120,12 +126,14 @@
             v-decorator="[
               'question_image_4',
               {
+                initialValue: [],
+                rules: [{validator: validatorFile}],
                 valuePropName: 'fileList',
                 getValueFromEvent: normFile,
               },
             ]"
             name="image"
-            :customRequest="customRequest"
+            action="/api/upload/image"
             @change="handleChange"
             list-type="picture"
           >
@@ -152,12 +160,14 @@
             v-decorator="[
               'question_image_5',
               {
+                initialValue: [],
+                rules: [{validator: validatorFile}],
                 valuePropName: 'fileList',
                 getValueFromEvent: normFile,
               },
             ]"
             name="image"
-            :customRequest="customRequest"
+            action="/api/upload/image"
             @change="handleChange"
             list-type="picture"
           >
@@ -184,12 +194,14 @@
             v-decorator="[
               'question_image_6',
               {
+                initialValue: [],
+                rules: [{validator: validatorFile}],
                 valuePropName: 'fileList',
                 getValueFromEvent: normFile,
               },
             ]"
             name="image"
-            :customRequest="customRequest"
+            action="/api/upload/image"
             @change="handleChange"
             list-type="picture"
           >
@@ -216,12 +228,14 @@
             v-decorator="[
               'question_image_7',
               {
+                initialValue: [],
+                rules: [{validator: validatorFile}],
                 valuePropName: 'fileList',
                 getValueFromEvent: normFile,
               },
             ]"
             name="image"
-            :customRequest="customRequest"
+            action="/api/upload/image"
             @change="handleChange"
             list-type="picture"
           >
@@ -248,12 +262,14 @@
             v-decorator="[
               'question_image_8',
               {
+                initialValue: [],
+                rules: [{validator: validatorFile}],
                 valuePropName: 'fileList',
                 getValueFromEvent: normFile,
               },
             ]"
             name="image"
-            :customRequest="customRequest"
+            action="/api/upload/image"
             @change="handleChange"
             list-type="picture"
           >
@@ -280,12 +296,14 @@
             v-decorator="[
               'question_image_9',
               {
+                initialValue: [],
+                rules: [{validator: validatorFile}],
                 valuePropName: 'fileList',
                 getValueFromEvent: normFile,
               },
             ]"
             name="image"
-            :customRequest="customRequest"
+            action="/api/upload/image"
             @change="handleChange"
             list-type="picture"
           >
@@ -302,8 +320,6 @@
 </template>
 
 <script>
-import { uploadImage } from '@/api/upload'
-
 export default {
   name: 'Step2',
   data () {
@@ -356,9 +372,9 @@ export default {
 
       // 2. read from response and show file link
       fileList = fileList.map(file => {
-        if (file.response) {
+        if (file.response !== undefined && file.response.code === 200) {
           // Component will show file.url as link
-          file.url = file.response
+          file.url = file.response.data
         }
         return file
       })
@@ -367,19 +383,6 @@ export default {
 
       return e && e.fileList
     },
-    customRequest (i) {
-      var file = new FormData()
-      file.append('name', i.file.name)
-      file.append(i.filename, i.file)
-      uploadImage(file)
-        .then(res => {
-          i.onSuccess(res)
-        })
-        .catch(e => {
-          console.log(e)
-          i.onError()
-        })
-    },
     handleChange (info) {
       if (info.file.status === 'done') {
         this.$message.success(`${info.file.name} 素材上传成功`)
@@ -387,6 +390,16 @@ export default {
         console.log(info)
       } else if (info.file.status === 'error') {
         this.$message.error(`${info.file.name} 素材上传失败`)
+      }
+    },
+    validatorFile (rule, value, callback) {
+      try {
+        if (value.length !== 0 && value[0].response !== undefined && value[0].response.code !== 200) {
+          throw new Error(value[0].response.message)
+        }
+        callback()
+      } catch (err) {
+        callback(err.message)
       }
     }
   },

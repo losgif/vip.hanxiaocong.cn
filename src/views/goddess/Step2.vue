@@ -25,14 +25,14 @@
               'question_image_1',
               {
                 initialValue: [],
-                rules: [{message: '请重新上传图片', validator: validatorFile}],
+                rules: [{validator: validatorFile}],
                 valuePropName: 'fileList',
                 getValueFromEvent: normFile,
               },
             ]"
             name="image"
-            :customRequest="customRequest"
             @change="handleChange"
+            action="/api/upload/image"
             list-type="picture"
           >
             <a-button> <a-icon type="upload" /> 点击上传图片 </a-button>
@@ -59,14 +59,14 @@
               'question_image_2',
               {
                 initialValue: [],
-                rules: [{message: '请重新上传图片', validator: validatorFile}],
+                rules: [{validator: validatorFile}],
                 valuePropName: 'fileList',
                 getValueFromEvent: normFile,
               },
             ]"
             name="image"
-            :customRequest="customRequest"
             @change="handleChange"
+            action="/api/upload/image"
             list-type="picture"
           >
             <a-button> <a-icon type="upload" /> 点击上传图片 </a-button>
@@ -93,14 +93,14 @@
               'question_image_3',
               {
                 initialValue: [],
-                rules: [{message: '请重新上传图片', validator: validatorFile}],
+                rules: [{validator: validatorFile}],
                 valuePropName: 'fileList',
                 getValueFromEvent: normFile,
               },
             ]"
             name="image"
-            :customRequest="customRequest"
             @change="handleChange"
+            action="/api/upload/image"
             list-type="picture"
           >
             <a-button> <a-icon type="upload" /> 点击上传图片 </a-button>
@@ -127,14 +127,14 @@
               'question_image_4',
               {
                 initialValue: [],
-                rules: [{message: '请重新上传图片', validator: validatorFile}],
+                rules: [{validator: validatorFile}],
                 valuePropName: 'fileList',
                 getValueFromEvent: normFile,
               },
             ]"
             name="image"
-            :customRequest="customRequest"
             @change="handleChange"
+            action="/api/upload/image"
             list-type="picture"
           >
             <a-button> <a-icon type="upload" /> 点击上传图片 </a-button>
@@ -161,14 +161,14 @@
               'question_image_5',
               {
                 initialValue: [],
-                rules: [{message: '请重新上传图片', validator: validatorFile}],
+                rules: [{validator: validatorFile}],
                 valuePropName: 'fileList',
                 getValueFromEvent: normFile,
               },
             ]"
             name="image"
-            :customRequest="customRequest"
             @change="handleChange"
+            action="/api/upload/image"
             list-type="picture"
           >
             <a-button> <a-icon type="upload" /> 点击上传图片 </a-button>
@@ -195,14 +195,14 @@
               'question_image_6',
               {
                 initialValue: [],
-                rules: [{message: '请重新上传图片', validator: validatorFile}],
+                rules: [{validator: validatorFile}],
                 valuePropName: 'fileList',
                 getValueFromEvent: normFile,
               },
             ]"
             name="image"
-            :customRequest="customRequest"
             @change="handleChange"
+            action="/api/upload/image"
             list-type="picture"
           >
             <a-button> <a-icon type="upload" /> 点击上传图片 </a-button>
@@ -229,14 +229,14 @@
               'question_image_7',
               {
                 initialValue: [],
-                rules: [{message: '请重新上传图片', validator: validatorFile}],
+                rules: [{validator: validatorFile}],
                 valuePropName: 'fileList',
                 getValueFromEvent: normFile,
               },
             ]"
             name="image"
-            :customRequest="customRequest"
             @change="handleChange"
+            action="/api/upload/image"
             list-type="picture"
           >
             <a-button> <a-icon type="upload" /> 点击上传图片 </a-button>
@@ -263,14 +263,14 @@
               'question_image_8',
               {
                 initialValue: [],
-                rules: [{message: '请重新上传图片', validator: validatorFile}],
+                rules: [{validator: validatorFile}],
                 valuePropName: 'fileList',
                 getValueFromEvent: normFile,
               },
             ]"
             name="image"
-            :customRequest="customRequest"
             @change="handleChange"
+            action="/api/upload/image"
             list-type="picture"
           >
             <a-button> <a-icon type="upload" /> 点击上传图片 </a-button>
@@ -286,7 +286,7 @@
       >
         <a-textarea
           placeholder="请填写简单的描述。"
-          v-decorator="['question_9', { initialValue: '', rules: [{required: true, message: '必填'}] }]"
+          v-decorator="['question_9', { initialValue: '', rules: [{required: true, message: '必填'}]}]"
           :autosize="{ minRows: 2, maxRows: 6 }"
         />
       </a-form-item>
@@ -297,14 +297,14 @@
               'question_image_9',
               {
                 initialValue: [],
-                rules: [{message: '请重新上传图片', validator: validatorFile}],
+                rules: [{required: true, message: '请上传图片'}, {validator: validatorFile}],
                 valuePropName: 'fileList',
                 getValueFromEvent: normFile,
               },
             ]"
             name="image"
-            :customRequest="customRequest"
             @change="handleChange"
+            action="/api/upload/image"
             list-type="picture"
           >
             <a-button> <a-icon type="upload" /> 点击上传图片 </a-button>
@@ -320,8 +320,6 @@
 </template>
 
 <script>
-import { uploadImage } from '@/api/upload'
-
 export default {
   name: 'Step2',
   data () {
@@ -355,9 +353,9 @@ export default {
 
       // 2. read from response and show file link
       fileList = fileList.map(file => {
-        if (file.response) {
+        if (file.response !== undefined && file.response.code === 200) {
           // Component will show file.url as link
-          file.url = file.response
+          file.url = file.response.data
         }
         return file
       })
@@ -366,53 +364,23 @@ export default {
 
       return e && e.fileList
     },
-    customRequest (i) {
-      var file = new FormData()
-      file.append('name', i.file.name)
-      file.append(i.filename, i.file)
-      uploadImage(file)
-        .then(res => {
-          this.$message.success(`${i.file.name} 素材上传成功`)
-          i.onSuccess(res)
-        })
-        .catch(e => {
-          this.requestFailed(e)
-          i.onError()
-        })
-    },
     handleChange (info) {
-      if (info.file.status === 'uploading') {
-        this.$message.info(`${info.file.name} 素材开始上传`)
+      if (info.file.status === 'done' || info.file.status === 'error') {
+        if (info.file.response.code === 200) {
+          this.$message.success(`${info.file.name} 素材上传成功`, 3)
+        } else {
+          this.$message.error('上传失败！' + info.file.response.message, 3)
+        }
       }
     },
     validatorFile (rule, value, callback) {
       try {
-        if (value.length !== 0 && value[0].response === undefined) {
-          throw new Error('system errors')
+        if (value.length !== 0 && value[0].response !== undefined && value[0].response.code !== 200) {
+          throw new Error(value[0].response.message)
         }
         callback()
       } catch (err) {
-        callback(err)
-      }
-    },
-    requestFailed (err) {
-      if (((err.response || {}).data || {}).message instanceof Object) {
-        var message = ((err.response || {}).data || {}).message
-        for (const key in message) {
-          setTimeout(() => {
-            this.$notification['error']({
-              message: '错误',
-              description: message[key] || '请求出现错误，请稍后再试',
-              duration: 3
-            })
-          }, 0)
-        }
-      } else {
-        this.$notification['error']({
-          message: '错误',
-          description: ((err.response || {}).data || {}).message || '请求出现错误，请稍后再试',
-          duration: 3
-        })
+        callback(err.message)
       }
     },
     nextStep () {

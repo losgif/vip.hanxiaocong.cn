@@ -132,7 +132,7 @@
       </template>
       <iframe
         id="copyTarget"
-        :src="'/api/information/preview?type=' + schoolApplication.type + '&array=[' + this.showId + ']'"
+        :src="'/api/information/preview?id=' + schoolApplication.id + '&type=' + schoolApplication.type + '&array=[' + this.showId + ']'"
         height="100%"
         width="100%"
         frameborder="0">
