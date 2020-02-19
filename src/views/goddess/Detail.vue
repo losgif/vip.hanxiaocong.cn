@@ -63,7 +63,7 @@
 
     <div class="table-operator">
       <a-button v-if="$route.meta.hiddenHeaderContent">
-        <router-link target="_blank" :to="'/goddess/' + $route.params.id">在新窗口打开此页面</router-link>
+        <router-link target="_blank" :to="'/goddess/' + $route.params.id">跳转到浏览器打开此页面</router-link>
       </a-button>
       <a-button type="primary">
         <router-link target="_blank" :to="'/goddess/home/' + $route.params.id">打开信息提交页面</router-link>

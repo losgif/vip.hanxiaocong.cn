@@ -10,16 +10,7 @@
 
       <route-view></route-view>
 
-      <!-- <div class="footer">
-        <div class="links">
-          <a href="_self">帮助</a>
-          <a href="_self">隐私</a>
-          <a href="_self">条款</a>
-        </div>
-        <div class="copyright">
-          Copyright &copy; 2020 <a target="_blank" :href="webUrl" >{{ webName }}</a>
-        </div>
-      </div> -->
+      <global-footer />
     </div>
   </div>
 </template>
@@ -27,17 +18,12 @@
 <script>
 import RouteView from './RouteView'
 import { mixinDevice } from '@/utils/mixin'
+import GlobalFooter from '@/components/GlobalFooter'
 
 export default {
   name: 'SubmitLayout',
-  components: { RouteView },
+  components: { RouteView, GlobalFooter },
   mixins: [mixinDevice],
-  data () {
-    return {
-      webName: '立青网络技术支持',
-      webUrl: 'https://losgif.com'
-    }
-  },
   mounted () {
     document.body.classList.add('submitLayout')
   },

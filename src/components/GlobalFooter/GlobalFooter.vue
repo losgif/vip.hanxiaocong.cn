@@ -15,8 +15,7 @@
       <a href="https://vue.ant.design/">Vue Antd</a>
     </div> -->
     <div class="copyright">
-      Copyright
-      <a-icon type="copyright" /> 2020 <span></span>
+      Copyright &copy; 2020 <a target="_blank" :href="webUrl" >{{ webName }}</a>
     </div>
   </div>
 </template>
@@ -25,7 +24,10 @@
 export default {
   name: 'GlobalFooter',
   data () {
-    return {}
+    return {
+      webName: '立青网络技术支持',
+      webUrl: 'https://losgif.com'
+    }
   }
 }
 </script>
