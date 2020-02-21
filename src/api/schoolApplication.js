@@ -18,3 +18,11 @@ export function schoolApplicationCreate (parameters) {
     data: parameters
   })
 }
+
+export function schoolApplicationUpdate (parameters) {
+  return axios({
+    url: api.SchoolApplication + '/' + parameters.id,
+    method: 'put',
+    data: parameters
+  })
+}

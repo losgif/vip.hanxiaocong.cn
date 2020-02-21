@@ -79,11 +79,11 @@ export default {
           dataIndex: 'id'
         },
         {
-          title: '应用类型',
+          title: '公众号备注',
           dataIndex: 'name'
         },
         {
-          title: '应用LOGO',
+          title: 'LOGO',
           dataIndex: 'logo',
           scopedSlots: { customRender: 'logo' }
         },

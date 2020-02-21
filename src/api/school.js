@@ -18,3 +18,11 @@ export function schoolIndex () {
     method: 'get'
   })
 }
+
+export function schoolUpdate (parameters) {
+  return axios({
+    url: api.School + '/' + parameters.id,
+    method: 'put',
+    data: parameters
+  })
+}

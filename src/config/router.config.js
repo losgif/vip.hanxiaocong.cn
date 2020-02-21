@@ -47,13 +47,13 @@ export const asyncRouterMap = [
         path: '/school',
         redirect: '/school/my',
         component: PageView,
-        meta: { title: '公众号管理', icon: 'form', roles: [ 'vistor', 'normal-user', 'super-admin' ] },
+        meta: { title: '接入公众号', icon: 'setting', roles: [ 'vistor', 'normal-user', 'super-admin' ] },
         children: [
           {
             path: '/school/my',
             name: 'SchoolMy',
             component: () => import('@/views/school/My'),
-            meta: { title: '我的公众号', keepAlive: true, roles: [ 'vistor', 'normal-user', 'super-admin' ] }
+            meta: { title: '配置公众号', keepAlive: true, roles: [ 'vistor', 'normal-user', 'super-admin' ] }
           }
         ]
       },
@@ -63,13 +63,13 @@ export const asyncRouterMap = [
         path: '/application',
         redirect: '/application/my',
         component: PageView,
-        meta: { title: '应用列表', icon: 'form', roles: ['normal-user', 'super-admin'] },
+        meta: { title: '公众号列表', icon: 'form', roles: ['normal-user', 'super-admin'] },
         children: [
           {
             path: '/application/my',
             name: 'ApplicationMy',
             component: () => import('@/views/application/My'),
-            meta: { title: '我的应用', keepAlive: true, roles: ['normal-user', 'super-admin'] }
+            meta: { title: '我的公众号', keepAlive: true, roles: ['normal-user', 'super-admin'] }
           }
         ]
       },
@@ -87,7 +87,7 @@ export const asyncRouterMap = [
             name: 'GoddessDetail',
             hidden: true,
             component: () => import('@/views/goddess/Detail'),
-            meta: { title: '应用详情', keepAlive: true, roles: ['normal-user', 'super-admin'] }
+            meta: { title: '公众号详情', keepAlive: true, roles: ['normal-user', 'super-admin'] }
           }
         ]
       },
@@ -105,7 +105,7 @@ export const asyncRouterMap = [
             name: 'RoommateDetail',
             hidden: true,
             component: () => import('@/views/roommate/Detail'),
-            meta: { title: '应用详情', keepAlive: true, roles: ['normal-user', 'super-admin'] }
+            meta: { title: '公众号详情', keepAlive: true, roles: ['normal-user', 'super-admin'] }
           }
         ]
       },
@@ -113,7 +113,7 @@ export const asyncRouterMap = [
         path: '/admin',
         redirect: '/admin/dashboard',
         component: PageView,
-        meta: { title: '管理后台', icon: 'form', roles: [ 'super-admin' ] },
+        meta: { title: '管理后台', icon: 'dashboard', roles: [ 'super-admin' ] },
         children: [
           {
             path: '/admin/dashboard',
@@ -131,7 +131,7 @@ export const asyncRouterMap = [
             path: '/admin/school-application-list',
             name: 'SchoolApplicationList',
             component: () => import('@/views/admin/SchoolApplicationList'),
-            meta: { title: '应用列表', keepAlive: true, roles: [ 'super-admin' ] }
+            meta: { title: '公众号列表', keepAlive: true, roles: [ 'super-admin' ] }
           }
         ]
       },
@@ -215,7 +215,7 @@ export const asyncRouterMap = [
                 path: '/list/search/application',
                 name: 'SearchApplications',
                 component: () => import('../views/list/search/Applications'),
-                meta: { title: '搜索列表（应用）', permission: [ 'table' ] }
+                meta: { title: '搜索列表（公众号）', permission: [ 'table' ] }
               }
             ]
           }
@@ -438,7 +438,7 @@ export const asyncRouterMap = [
             name: 'WeixiaoGoddessDetail',
             hidden: true,
             component: () => import('@/views/goddess/Detail'),
-            meta: { title: '应用详情', keepAlive: true, roles: [ 'normal-user', 'super-admin' ], hiddenHeaderContent: true }
+            meta: { title: '公众号详情', keepAlive: true, roles: [ 'normal-user', 'super-admin' ], hiddenHeaderContent: true }
           }
         ]
       },
@@ -453,7 +453,7 @@ export const asyncRouterMap = [
             name: 'WeixiaoRoommateDetail',
             hidden: true,
             component: () => import('@/views/roommate/Detail'),
-            meta: { title: '应用详情', keepAlive: true, roles: [ 'normal-user', 'super-admin' ], hiddenHeaderContent: true }
+            meta: { title: '公众号详情', keepAlive: true, roles: [ 'normal-user', 'super-admin' ], hiddenHeaderContent: true }
           }
         ]
       }

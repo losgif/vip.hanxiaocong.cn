@@ -31,7 +31,7 @@ export default {
   },
   data () {
     return {
-      currentTab: 0,
+      currentTab: 1,
       scrollTop: 0,
       // form
       form: {}

@@ -9,7 +9,7 @@
         <template v-if="!item || item.id === undefined">
           <a-button class="new-btn" type="dashed" @click="handleCreate">
             <a-icon type="plus"/>
-            添加应用
+            添加公众号
           </a-button>
         </template>
         <template v-else>
@@ -20,6 +20,7 @@
               <div class="meta-content" slot="description">{{ item.description }}</div>
             </a-card-meta>
             <template class="ant-card-actions" slot="actions">
+              <a @click="handleEdit(item)">编辑</a>
               <router-link :to="'/' + item.type + '/' + item.id">管理</router-link>
             </template>
           </a-card>
@@ -41,7 +42,7 @@
           label="应用类型"
           hasFeedback
         >
-          <a-select v-model="mdl.application_id" style="width: 100%" placeholder="请选择应用类型">
+          <a-select v-model="mdl.application_id" style="width: 100%" placeholder="请选择应用类型" @change="handleTypeChange">
             <a-select-option
               v-for="app in applicationList"
               :key="app.id">
@@ -53,10 +54,59 @@
         <a-form-item
           :labelCol="labelCol"
           :wrapperCol="wrapperCol"
+          label="公众号备注"
+          hasFeedback
+        >
+          <a-input placeholder="请输入公众号备注" v-model="mdl.name" />
+          </a-select>
+        </a-form-item>
+
+        <a-form-item
+          :labelCol="labelCol"
+          :wrapperCol="wrapperCol"
           label="公众号回复关键词"
           hasFeedback
         >
-          <a-select mode="tags" v-model="mdl.keyword" style="width: 100%" @change="handleKeywordChange" placeholder="请输入回复关键词">
+          <a-select mode="tags" v-model="mdl.keyword" style="width: 100%" placeholder="请输入回复关键词">
+          </a-select>
+        </a-form-item>
+      </a-form>
+    </a-modal>
+
+    <a-modal
+      title="操作"
+      style="top: 20px;"
+      :width="800"
+      v-model="editVisible"
+      @ok="handleEditOk"
+    >
+      <a-form :form="form">
+        <a-form-item
+          :labelCol="labelCol"
+          :wrapperCol="wrapperCol"
+          label="公众号ID"
+          hasFeedback
+        >
+          <a-input disabled v-model="editMdl.id" />
+        </a-form-item>
+
+        <a-form-item
+          :labelCol="labelCol"
+          :wrapperCol="wrapperCol"
+          label="公众号备注"
+          hasFeedback
+        >
+          <a-input placeholder="请输入公众号备注" v-model="editMdl.name" />
+          </a-select>
+        </a-form-item>
+
+        <a-form-item
+          :labelCol="labelCol"
+          :wrapperCol="wrapperCol"
+          label="公众号回复关键词"
+          hasFeedback
+        >
+          <a-select mode="tags" v-model="editMdl.keyword" style="width: 100%" placeholder="请输入回复关键词">
           </a-select>
         </a-form-item>
       </a-form>
@@ -66,7 +116,7 @@
 
 <script>
 import { applicationIndex } from '@/api/application'
-import { schoolApplicationCreate } from '@/api/schoolApplication'
+import { schoolApplicationCreate, schoolApplicationUpdate } from '@/api/schoolApplication'
 import { requestFailedHandle } from '@/utils/request'
 
 export default {
@@ -74,6 +124,7 @@ export default {
   data () {
     return {
       visible: false,
+      editVisible: false,
       labelCol: {
         xs: { span: 24 },
         sm: { span: 5 }
@@ -82,7 +133,12 @@ export default {
         xs: { span: 24 },
         sm: { span: 16 }
       },
-      mdl: {},
+      mdl: {
+        name: ''
+      },
+      editMdl: {
+        name: ''
+      },
       form: this.$form.createForm(this),
       description: '用最小的工作量，无缝接入公众号生态， 提供跨越设计与开发的体验解决方案。',
       linkList: [
@@ -124,6 +180,22 @@ export default {
     this.getApplications()
   },
   methods: {
+    handleEdit (record) {
+      console.log(record)
+      this.editMdl.name = record.name
+      this.editMdl.id = record.id
+      this.editMdl.keyword = record.keyword
+      this.editVisible = true
+    },
+    handleEditOk () {
+      schoolApplicationUpdate(this.editMdl).then(res => {
+        this.editVisible = false
+        this.$message.success(res.data)
+        this.getProjects()
+      }).catch(e => {
+        requestFailedHandle(e)
+      })
+    },
     getApplications () {
       applicationIndex().then(res => {
         this.applicationList = res.data
@@ -134,6 +206,7 @@ export default {
     getProjects () {
       this.$http.get('/workplace/applications')
         .then(res => {
+          this.applications = [{}]
           res.data.forEach(e => {
             this.applications.push(e)
           })
@@ -154,8 +227,12 @@ export default {
         requestFailedHandle(e)
       })
     },
-    handleKeywordChange (value) {
-      console.log(value)
+    handleTypeChange (value) {
+      for (let i = 0, len = this.applicationList.length; i < len; i++) {
+        if (this.applicationList[i].id === value) {
+          this.mdl.name = this.applicationList[i].name
+        }
+      }
     },
     showDeveloping () {
       this.$message.warning('施主莫急，程序猿小哥正在努力开发中。')

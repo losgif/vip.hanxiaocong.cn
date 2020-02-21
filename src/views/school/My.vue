@@ -9,7 +9,7 @@
         <template v-if="!item || item.id === undefined">
           <a-button class="new-btn" type="dashed" @click="handleCreate">
             <a-icon type="plus"/>
-            添加应用
+            配置公众号
           </a-button>
         </template>
         <template v-else>
@@ -20,7 +20,7 @@
               <div class="meta-content" slot="description">{{ item.media_number }}</div>
             </a-card-meta>
             <template class="ant-card-actions" slot="actions">
-              <router-link :to="{ name: 'SchoolMy' }">管理</router-link>
+              <a @click="handleMange(item)">管理</a>
             </template>
           </a-card>
         </template>
@@ -38,10 +38,10 @@
         <a-form-item
           :labelCol="labelCol"
           :wrapperCol="wrapperCol"
-          label="公众号名称"
+          label="配置名称"
           hasFeedback
         >
-          <a-input placeholder="请填写公众号名称" v-model="mdl.name" />
+          <a-input placeholder="请填写配置名称" v-model="mdl.name" />
         </a-form-item>
 
         <a-form-item
@@ -72,11 +72,77 @@
         </a-form-item>
       </a-form>
     </a-modal>
+
+    <a-modal
+      title="操作"
+      style="top: 20px;"
+      :width="800"
+      v-model="manageVisible"
+      @ok="handleEditOk"
+    >
+      <a-form :form="form">
+        <a-form-item
+          :labelCol="labelCol"
+          :wrapperCol="wrapperCol"
+          label="配置ID"
+          hasFeedback
+        >
+          <a-input disabled v-model="editMdl.id" />
+        </a-form-item>
+
+        <a-form-item
+          :labelCol="labelCol"
+          :wrapperCol="wrapperCol"
+          label="配置名称"
+          hasFeedback
+        >
+          <a-input placeholder="请输入配置名称" v-model="editMdl.name" />
+          </a-select>
+        </a-form-item>
+
+        <a-form-item
+          :labelCol="labelCol"
+          :wrapperCol="wrapperCol"
+          label="运营者微信号"
+          hasFeedback
+        >
+          <a-input placeholder="请填写运营者微信号" v-model="editMdl.media_number" />
+        </a-form-item>
+
+        <a-form-item
+          :labelCol="labelCol"
+          :wrapperCol="wrapperCol"
+          label="公众号原始ID"
+          hasFeedback
+        >
+          <a-input placeholder="请填写公众号原始ID" v-model="editMdl.media_id" />
+        </a-form-item>
+
+        <a-form-item
+          :labelCol="labelCol"
+          :wrapperCol="wrapperCol"
+          label="API地址"
+          hasFeedback
+        >
+          <a-input placeholder="请输入API地址" disabled v-model="editMdl.api" />
+          </a-select>
+        </a-form-item>
+
+        <a-form-item
+          :labelCol="labelCol"
+          :wrapperCol="wrapperCol"
+          label="令牌"
+          hasFeedback
+        >
+          <a-input placeholder="为空将自动生成" v-model="editMdl.token" />
+        </a-form-item>
+      </a-form>
+    </a-modal>
   </div>
 </template>
 
 <script>
-import { schoolCreate, schoolIndex } from '@/api/school'
+import { schoolCreate, schoolIndex, schoolUpdate } from '@/api/school'
 import { requestFailedHandle } from '@/utils/request'
 
 export default {
@@ -93,6 +159,8 @@ export default {
         sm: { span: 16 }
       },
       mdl: {},
+      editMdl: {},
+      manageVisible: false,
       form: this.$form.createForm(this),
       description: '用最小的工作量，无缝接入公众号生态， 提供跨越设计与开发的体验解决方案。',
       linkList: [
@@ -134,21 +202,33 @@ export default {
   methods: {
     getProjects () {
       schoolIndex().then(res => {
+        this.schools = [{}]
         res.data.forEach(e => {
           this.schools.push(e)
         })
       })
     },
+    handleMange (record) {
+      this.editMdl = record
+      this.manageVisible = true
+    },
     handleCreate () {
       this.visible = true
+    },
+    handleEditOk () {
+      schoolUpdate(this.editMdl).then(res => {
+        this.$message.success(res.data)
+        this.manageVisible = false
+        this.getProjects()
+      }).catch(e => {
+        requestFailedHandle(e)
+      })
     },
     handleOk () {
       schoolCreate(this.mdl).then(res => {
         this.$message.success(res.data)
         this.visible = false
-        setTimeout(() => {
-          window.location.reload()
-        }, 2000)
+        this.getProjects()
       }).catch(e => {
         requestFailedHandle(e)
       })
