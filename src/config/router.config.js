@@ -51,7 +51,7 @@ export const asyncRouterMap = [
         children: [
           {
             path: '/school/my',
-            name: 'SchoolIndex',
+            name: 'SchoolMy',
             component: () => import('@/views/school/My'),
             meta: { title: '我的公众号', keepAlive: true, roles: [ 'vistor', 'normal-user', 'super-admin' ] }
           }
@@ -67,7 +67,7 @@ export const asyncRouterMap = [
         children: [
           {
             path: '/application/my',
-            name: 'ApplicationIndex',
+            name: 'ApplicationMy',
             component: () => import('@/views/application/My'),
             meta: { title: '我的应用', keepAlive: true, roles: ['normal-user', 'super-admin'] }
           }

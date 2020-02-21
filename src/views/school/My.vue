@@ -15,12 +15,12 @@
         <template v-else>
           <a-card :hoverable="true">
             <a-card-meta>
-              <router-link slot="title" :to="'/' + item.type + '/' + item.id">{{ item.name }}</router-link>
+              <router-link :to="{ name: 'SchoolMy' }" slot="title">{{ item.name }}</router-link>
               <!-- <a-avatar class="card-avatar" slot="avatar" :src="item.logo" size="large"/> -->
               <div class="meta-content" slot="description">{{ item.media_number }}</div>
             </a-card-meta>
             <template class="ant-card-actions" slot="actions">
-              <router-link :to="'/' + item.type + '/' + item.id">管理</router-link>
+              <router-link :to="{ name: 'SchoolMy' }">管理</router-link>
             </template>
           </a-card>
         </template>
@@ -61,6 +61,15 @@
         >
           <a-input placeholder="请填写公众号原始ID" v-model="mdl.media_id" />
         </a-form-item>
+
+        <a-form-item
+          :labelCol="labelCol"
+          :wrapperCol="wrapperCol"
+          label="令牌"
+          hasFeedback
+        >
+          <a-input placeholder="为空将自动生成" v-model="mdl.token" />
+        </a-form-item>
       </a-form>
     </a-modal>
   </div>
@@ -84,6 +93,7 @@ export default {
         sm: { span: 16 }
       },
       mdl: {},
+      form: this.$form.createForm(this),
       description: '用最小的工作量，无缝接入公众号生态， 提供跨越设计与开发的体验解决方案。',
       linkList: [
         {

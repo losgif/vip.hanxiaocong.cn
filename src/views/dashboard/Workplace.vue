@@ -53,7 +53,8 @@
                 <a-list-item-meta>
                   <a-avatar slot="avatar" :src="item.extra.person_image" />
                   <div slot="title">
-                    <span>{{ item.extra.name }}</span>&nbsp;
+                    <span v-if="item.application.type === 'roommate'">{{ item.extra.ta_name }}</span>&nbsp;
+                    <span v-if="item.application.type === 'gooddess'">{{ item.extra.name }}</span>&nbsp;
                     在&nbsp;<router-link :to="'/' + item.application.type + '/' + item.application.id">{{ item.application.name }}</router-link>&nbsp;
                     <span>应用中提交了信息，请尽快处理。</span>&nbsp;
                     <router-link :to="'/' + item.application.type + '/' + item.application.id">立即处理</router-link>

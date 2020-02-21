@@ -10,3 +10,11 @@ export function schoolApplicationShow (id) {
     method: 'get'
   })
 }
+
+export function schoolApplicationCreate (parameters) {
+  return axios({
+    url: api.SchoolApplication,
+    method: 'post',
+    data: parameters
+  })
+}

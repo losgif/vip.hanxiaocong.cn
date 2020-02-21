@@ -34,3 +34,17 @@ export function getAdminSchoolApplicationList (parameters) {
     data: parameters
   })
 }
+
+export function deleteAdminSchoolApplicationList (id) {
+  return axios({
+    url: api.Admin + '/schoolApplication/' + id,
+    method: 'delete'
+  })
+}
+
+export function getWorkplaceList () {
+  return axios({
+    url: api.Admin + '/workplace',
+    method: 'get'
+  })
+}

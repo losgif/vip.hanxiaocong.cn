@@ -33,29 +33,11 @@
       :columns="columns"
       :data="loadData"
     >
-      <div
-        slot="expandedRowRender"
-        slot-scope="record"
-        style="margin: 0">
-        <a-row
-          :gutter="24"
-          :style="{ marginBottom: '12px' }">
-          <a-col :span="12" v-for="(role) in record.role" :key="role.id" :style="{ marginBottom: '12px' }">
-            <a-col :lg="4" :md="24">
-              <span>{{ role.name }}：</span>
-            </a-col>
-            <a-col :lg="20" :md="24" v-if="role.permission.length > 0">
-              <a-tag color="cyan" v-for="(permission) in role.permission" :key="permission.id">{{ permission.name }}</a-tag>
-            </a-col>
-            <a-col :span="20" v-else>-</a-col>
-          </a-col>
-        </a-row>
-      </div>
-      <span slot="status" slot-scope="text">
-        <a-badge :status="text | statusTypeFilter" :text="text | statusFilter" />
+      <span slot="logo" slot-scope="text">
+        <a-avatar shape="square" :size="64" :src="text"/>
       </span>
       <span slot="action" slot-scope="text, record">
-        <a @click="handleEdit(record)">编辑</a>
+        <router-link :to="'/' + record.type + '/' + record.id">管理</router-link>
         <a-divider type="vertical" />
         <a-dropdown>
           <a class="ant-dropdown-link">
@@ -69,84 +51,13 @@
         </a-dropdown>
       </span>
     </s-table>
-
-    <a-modal
-      title="操作"
-      style="top: 20px;"
-      :width="800"
-      v-model="visible"
-      @ok="handleOk"
-    >
-      <a-form :form="form">
-
-        <a-form-item
-          :labelCol="labelCol"
-          :wrapperCol="wrapperCol"
-          label="ID"
-          hasFeedback
-        >
-          <a-input placeholder="ID" v-model="mdl.id" disabled="disabled" />
-        </a-form-item>
-
-        <a-form-item
-          :labelCol="labelCol"
-          :wrapperCol="wrapperCol"
-          label="用户名"
-          hasFeedback
-        >
-          <a-input placeholder="请设置用户名" v-model="mdl.name" />
-        </a-form-item>
-
-        <a-form-item
-          :labelCol="labelCol"
-          :wrapperCol="wrapperCol"
-          label="邮箱"
-          hasFeedback
-        >
-          <a-input placeholder="请设置邮箱" v-model="mdl.email" />
-        </a-form-item>
-
-        <a-form-item
-          :labelCol="labelCol"
-          :wrapperCol="wrapperCol"
-          label="手机号"
-          hasFeedback
-        >
-          <a-input placeholder="请设置手机号码" v-model="mdl.phone" />
-        </a-form-item>
-
-        <a-form-item
-          :labelCol="labelCol"
-          :wrapperCol="wrapperCol"
-          label="状态"
-          hasFeedback
-        >
-          <a-select v-model="mdl.status">
-            <a-select-option :value="1">正常</a-select-option>
-            <a-select-option :value="0">禁用</a-select-option>
-          </a-select>
-        </a-form-item>
-      </a-form>
-    </a-modal>
-
   </a-card>
 </template>
 
 <script>
 import { STable } from '@/components'
-import { getAdminSchoolApplicationList, updateAdminUserList, deleteAdminUserList } from '@/api/admin'
+import { getAdminSchoolApplicationList, deleteAdminSchoolApplicationList } from '@/api/admin'
 import { requestFailedHandle } from '@/utils/request'
-
-const statusMap = {
-  1: {
-    status: 'success',
-    text: '正常'
-  },
-  0: {
-    status: 'error',
-    text: '禁用'
-  }
-}
 
 export default {
   name: 'TableList',
@@ -156,18 +67,6 @@ export default {
   data () {
     return {
       description: '后台管理中的权限管理以及角色管理，可用于基于 RBAC 设计的角色权限控制，颗粒度细到每一个操作类型。',
-
-      visible: false,
-      labelCol: {
-        xs: { span: 24 },
-        sm: { span: 5 }
-      },
-      wrapperCol: {
-        xs: { span: 24 },
-        sm: { span: 16 }
-      },
-      form: null,
-      mdl: {},
 
       // 高级搜索 展开/关闭
       advanced: false,
@@ -180,21 +79,29 @@ export default {
           dataIndex: 'id'
         },
         {
-          title: '用户名',
+          title: '应用类型',
           dataIndex: 'name'
         },
         {
-          title: '邮箱',
-          dataIndex: 'email'
+          title: '应用LOGO',
+          dataIndex: 'logo',
+          scopedSlots: { customRender: 'logo' }
+        },
+        {
+          title: '公众号名称',
+          dataIndex: 'school.name'
+        },
+        {
+          title: '用户名',
+          dataIndex: 'school.user.name'
         },
         {
           title: '手机号码',
-          dataIndex: 'phone'
+          dataIndex: 'school.user.phone'
         },
         {
-          title: '状态',
-          dataIndex: 'status',
-          scopedSlots: { customRender: 'status' }
+          title: '提交信息数',
+          dataIndex: 'information_count'
         },
         {
           title: '创建时间',
@@ -203,7 +110,7 @@ export default {
         },
         {
           title: '更新时间',
-          dataIndex: 'udpated_at',
+          dataIndex: 'updated_at',
           sorter: true
         },
         {
@@ -228,26 +135,7 @@ export default {
       selectedRows: []
     }
   },
-  filters: {
-    statusFilter (type) {
-      return statusMap[type].text
-    },
-    statusTypeFilter (type) {
-      return statusMap[type].status
-    }
-  },
   methods: {
-    handleEdit (record) {
-      this.mdl = Object.assign({}, record)
-      this.visible = true
-    },
-    handleOk () {
-      updateAdminUserList(this.mdl).then(res => {
-        this.$message.success(res.data)
-        this.visible = false
-        this.$refs.table.refresh()
-      })
-    },
     handleDelete (id) {
       this.$confirm({
         title: '删除后不可恢复',
@@ -256,7 +144,7 @@ export default {
         okType: 'danger',
         cancelText: '取消',
         onOk: () => {
-          deleteAdminUserList(id).then(res => {
+          deleteAdminSchoolApplicationList(id).then(res => {
             this.$message.success(res.data)
             this.$refs.table.refresh()
           }).catch(e => {

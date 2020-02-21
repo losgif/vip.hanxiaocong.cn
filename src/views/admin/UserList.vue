@@ -203,7 +203,7 @@ export default {
         },
         {
           title: '更新时间',
-          dataIndex: 'udpated_at',
+          dataIndex: 'updated_at',
           sorter: true
         },
         {
