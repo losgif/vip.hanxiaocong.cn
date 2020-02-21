@@ -18,7 +18,7 @@
 import Step1 from './Step1'
 import Step2 from './Step2'
 import { uploadInfo } from '@/api/upload'
-import { requestfailedHandle } from '@/utils/request'
+import { requestFailedHandle } from '@/utils/request'
 
 export default {
   name: 'StepForm',
@@ -55,7 +55,7 @@ export default {
             this.currentTab = currentTab
           })
           .catch(e => {
-            requestfailedHandle(e)
+            requestFailedHandle(e)
           })
       } else {
         this.backTop()

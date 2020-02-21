@@ -68,13 +68,16 @@ const user = {
 
           if (result.role && result.role[0].permission.length > 0) {
             const role = result.role
-            role.permissions = result.role[0].permission
-            role.permissions.map(per => {
-              if (per.actionEntitySet != null && per.actionEntitySet.length > 0) {
-                const action = per.actionEntitySet.map(action => { return action.action })
-                per.actionList = action
-              }
+            role.map(r => {
+              role.permissions = result.role[0].permission
+              role.permissions.map(per => {
+                if (per.actionEntitySet != null && per.actionEntitySet.length > 0) {
+                  const action = per.actionEntitySet.map(action => { return action.action })
+                  per.actionList = action
+                }
+              })
             })
+
             // role.permissionList = role.permissions.map(permission => { return permission.id })
             role.permissionList = role.permissions
             commit('SET_ROLES', result.role)

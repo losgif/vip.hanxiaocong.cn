@@ -5,71 +5,47 @@
 
         <a-form layout="vertical">
           <a-form-item
-            label="昵称"
+            label="用户名"
           >
-            <a-input placeholder="给自己起个名字" />
-          </a-form-item>
-          <a-form-item
-            label="Bio"
-          >
-            <a-textarea rows="4" placeholder="You are not alone."/>
+            <a-input v-model="info.name" placeholder="给自己起个名字" />
           </a-form-item>
 
           <a-form-item
             label="电子邮件"
             :required="false"
           >
-            <a-input placeholder="exp@admin.com"/>
+            <a-input v-model="info.email" placeholder="exp@admin.com"/>
           </a-form-item>
+
           <a-form-item
-            label="加密方式"
+            label="手机号码"
             :required="false"
           >
-            <a-select defaultValue="aes-256-cfb">
-              <a-select-option value="aes-256-cfb">aes-256-cfb</a-select-option>
-              <a-select-option value="aes-128-cfb">aes-128-cfb</a-select-option>
-              <a-select-option value="chacha20">chacha20</a-select-option>
-            </a-select>
+            <a-input v-model="info.phone" placeholder="请输入手机号码"/>
           </a-form-item>
-          <a-form-item
-            label="连接密码"
-            :required="false"
-          >
-            <a-input placeholder="h3gSbecd"/>
-          </a-form-item>
+
           <a-form-item
             label="登录密码"
             :required="false"
           >
-            <a-input placeholder="密码"/>
+            <a-input v-model="password" placeholder="留空不修改"/>
           </a-form-item>
 
           <a-form-item>
-            <a-button type="primary">提交</a-button>
-            <a-button style="margin-left: 8px">保存</a-button>
+            <a-button @click="handleUserInfoUpdate">保存</a-button>
           </a-form-item>
         </a-form>
 
       </a-col>
-      <a-col :md="24" :lg="8" :style="{ minHeight: '180px' }">
-        <div class="ant-upload-preview" @click="$refs.modal.edit(1)" >
-          <a-icon type="cloud-upload-o" class="upload-icon"/>
-          <div class="mask">
-            <a-icon type="plus" />
-          </div>
-          <img :src="option.img"/>
-        </div>
-      </a-col>
-
     </a-row>
-
-    <avatar-modal ref="modal" @ok="setavatar"/>
-
   </div>
 </template>
 
 <script>
 import AvatarModal from './AvatarModal'
+import { mapState } from 'vuex'
+import { userUpdate } from '@/api/user'
+import { requestFailedHandle } from '@/utils/request'
 
 export default {
   components: {
@@ -77,6 +53,7 @@ export default {
   },
   data () {
     return {
+      password: '',
       // cropper
       preview: {},
       option: {
@@ -96,7 +73,25 @@ export default {
       }
     }
   },
+  computed: {
+    ...mapState({
+      info: (state) => state.user.info
+    })
+  },
   methods: {
+    handleUserInfoUpdate () {
+      userUpdate({
+        id: this.info.id,
+        name: this.info.name,
+        email: this.info.email,
+        phone: this.info.phone,
+        password: this.password
+      }).then(res => {
+        this.$message.success(res.data)
+      }).catch(e => {
+        requestFailedHandle(e)
+      })
+    },
     setavatar (url) {
       this.option.img = url
     }

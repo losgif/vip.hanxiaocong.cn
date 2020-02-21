@@ -59,7 +59,7 @@ const installer = {
   }
 }
 
-const requestfailedHandle = (err) => {
+const requestFailedHandle = (err) => {
   if (((err.response || {}).data || {}).message instanceof Object) {
     var message = ((err.response || {}).data || {}).message
     for (const key in message) {
@@ -83,5 +83,5 @@ const requestfailedHandle = (err) => {
 export {
   installer as VueAxios,
   service as axios,
-  requestfailedHandle
+  requestFailedHandle
 }

@@ -45,7 +45,7 @@
         </a-tab-pane>
         <a-tab-pane key="tab2" tab="手机号登录">
           <a-form-item>
-            <a-input size="large" type="text" placeholder="手机号" v-decorator="['mobile', {rules: [{ required: true, pattern: /^1[34578]\d{9}$/, message: '请输入正确的手机号' }], validateTrigger: 'change'}]">
+            <a-input size="large" type="text" placeholder="手机号" v-decorator="['phone', {rules: [{ required: true, pattern: /^1[34578]\d{9}$/, message: '请输入正确的手机号' }], validateTrigger: 'change'}]">
               <a-icon slot="prefix" type="mobile" :style="{ color: 'rgba(0,0,0,.25)' }"/>
             </a-input>
           </a-form-item>
@@ -53,31 +53,38 @@
           <a-row :gutter="16">
             <a-col class="gutter-row" :span="16">
               <a-form-item>
-                <a-input size="large" type="text" placeholder="验证码" v-decorator="['captcha', {rules: [{ required: true, message: '请输入验证码' }], validateTrigger: 'blur'}]">
+                <a-input size="large" type="text" placeholder="验证码" v-decorator="['verify_code', {rules: [{ required: true, message: '请输入验证码' }], validateTrigger: 'blur'}]">
                   <a-icon slot="prefix" type="mail" :style="{ color: 'rgba(0,0,0,.25)' }"/>
                 </a-input>
               </a-form-item>
             </a-col>
             <a-col class="gutter-row" :span="8">
-              <a-button
-                class="getCaptcha"
-                tabindex="-1"
-                :disabled="state.smsSendBtn"
-                @click.stop.prevent="getCaptcha"
-                v-text="!state.smsSendBtn && '获取验证码' || (state.time+' s')"
-              ></a-button>
+              <Captcha
+                id="Captcha"
+                :parm="{ appid: 2003623800 }"
+                @callback="captchaNotice"
+                url="https://ssl.captcha.qq.com/ticket/verify"
+              >
+                <a-button
+                  id="Captcha"
+                  class="getCaptcha"
+                  tabindex="-1"
+                  size="large"
+                  :disabled="state.smsSendBtn"
+                  v-text="!state.smsSendBtn && '获取验证码'||(state.time+' s')"></a-button>
+              </Captcha>
             </a-col>
           </a-row>
         </a-tab-pane>
       </a-tabs>
 
       <a-form-item>
-        <a-checkbox v-decorator="['rememberMe']">自动登录</a-checkbox>
-        <router-link
-          :to="{ name: 'recover', params: { user: 'aaa'} }"
+        <a-checkbox v-decorator="['remember']">自动登录</a-checkbox>
+        <a
           class="forge-password"
           style="float: right;"
-        >忘记密码</router-link>
+          @click="handleRecover"
+        >忘记密码</a>
       </a-form-item>
 
       <a-form-item style="margin-top:24px">
@@ -94,13 +101,13 @@
       <div class="user-login-other">
         <span>其他登录方式</span>
         <a>
-          <a-icon class="item-icon" type="alipay-circle"></a-icon>
+          <a-icon class="item-icon" @click="handleOauth('wechat')" type="wechat"></a-icon>
         </a>
         <a>
-          <a-icon class="item-icon" type="taobao-circle"></a-icon>
+          <a-icon class="item-icon" @click="handleOauth('alipay')" type="alipay"></a-icon>
         </a>
         <a>
-          <a-icon class="item-icon" type="weibo-circle"></a-icon>
+          <a-icon class="item-icon" @click="handleOauth('qq')" type="qq"></a-icon>
         </a>
         <router-link class="register" :to="{ name: 'register' }">注册账户</router-link>
       </div>
@@ -120,10 +127,13 @@ import TwoStepCaptcha from '@/components/tools/TwoStepCaptcha'
 import { mapActions } from 'vuex'
 import { timeFix } from '@/utils/util'
 import { getSmsCaptcha } from '@/api/login'
+import { requestFailedHandle } from '@/utils/request.js'
+import Captcha from './Captcha'
 
 export default {
   components: {
-    TwoStepCaptcha
+    TwoStepCaptcha,
+    Captcha
   },
   data () {
     return {
@@ -162,11 +172,55 @@ export default {
 
       this.LoginByToken(accessToken)
         .then((res) => this.loginSuccess(res))
-        .catch(err => this.requestFailed(err))
+        .catch(err => requestFailedHandle(err))
     }
   },
   methods: {
     ...mapActions(['Login', 'LoginByToken', 'Logout']),
+    handleRecover () {
+      this.$message.warning('请使用手机号登陆')
+    },
+    captchaNotice (parameter) {
+      if (parameter.ret === 0) {
+        this.getCaptcha(parameter)
+      } else {
+        this.$message.error('人机验证失败')
+      }
+    },
+    getCaptcha (parameter) {
+      const { form: { validateFields }, state, $message, $notification } = this
+
+      validateFields(['phone'], { force: true },
+        (err, values) => {
+          if (!err) {
+            state.smsSendBtn = true
+
+            const hide = $message.loading('验证码发送中..', 0)
+
+            getSmsCaptcha(Object.assign(parameter, { phone: values.phone })).then(res => {
+              setTimeout(hide, 1)
+              const interval = window.setInterval(() => {
+                if (state.time-- <= 0) {
+                  state.time = res.data.seconds
+                  state.smsSendBtn = false
+                  window.clearInterval(interval)
+                }
+              }, 1000)
+              $notification['success']({
+                message: '提示',
+                description: res.data.msg,
+                duration: 3
+              })
+            }).catch(err => {
+              setTimeout(hide, 1)
+              state.time = 60
+              state.smsSendBtn = false
+              requestFailedHandle(err)
+            })
+          }
+        }
+      )
+    },
     // handler
     handleUsernameOrEmail (rule, value, callback) {
       const { state } = this
@@ -177,6 +231,9 @@ export default {
         state.loginType = 1
       }
       callback()
+    },
+    handleOauth (type) {
+      this.$message.warning('加紧开发中，施主莫急')
     },
     handleTabClick (key) {
       this.customActiveKey = key
@@ -193,7 +250,7 @@ export default {
 
       state.loginBtn = true
 
-      const validateFieldsKey = customActiveKey === 'tab1' ? ['name', 'password'] : ['mobile', 'captcha']
+      const validateFieldsKey = customActiveKey === 'tab1' ? ['name', 'password'] : ['phone', 'verify_code']
 
       validateFields(validateFieldsKey, { force: true }, (err, values) => {
         if (!err) {
@@ -202,7 +259,7 @@ export default {
           loginParams[!state.loginType ? 'email' : 'name'] = values.name
           Login(loginParams)
             .then((res) => this.loginSuccess(res))
-            .catch(err => this.requestFailed(err))
+            .catch(err => requestFailedHandle(err))
             .finally(() => {
               state.loginBtn = false
             })
@@ -210,40 +267,6 @@ export default {
           setTimeout(() => {
             state.loginBtn = false
           }, 600)
-        }
-      })
-    },
-    getCaptcha (e) {
-      e.preventDefault()
-      const { form: { validateFields }, state } = this
-
-      validateFields(['mobile'], { force: true }, (err, values) => {
-        if (!err) {
-          state.smsSendBtn = true
-
-          const interval = window.setInterval(() => {
-            if (state.time-- <= 0) {
-              state.time = 60
-              state.smsSendBtn = false
-              window.clearInterval(interval)
-            }
-          }, 1000)
-
-          const hide = this.$message.loading('验证码发送中..', 0)
-          getSmsCaptcha({ mobile: values.mobile }).then(res => {
-            setTimeout(hide, 2500)
-            this.$notification['success']({
-              message: '提示',
-              description: '验证码获取成功，您的验证码为：' + res.result.captcha,
-              duration: 8
-            })
-          }).catch(err => {
-            setTimeout(hide, 1)
-            clearInterval(interval)
-            state.time = 60
-            state.smsSendBtn = false
-            this.requestFailed(err)
-          })
         }
       })
     },
@@ -278,27 +301,6 @@ export default {
         })
       }, 1000)
       this.isLoginError = false
-    },
-    requestFailed (err) {
-      this.isLoginError = true
-      if (((err.response || {}).data || {}).message instanceof Object) {
-        var message = ((err.response || {}).data || {}).message
-        for (const key in message) {
-          setTimeout(() => {
-            this.$notification['error']({
-              message: '错误',
-              description: message[key] || '请求出现错误，请稍后再试',
-              duration: 3
-            })
-          }, 0)
-        }
-      } else {
-        this.$notification['error']({
-          message: '错误',
-          description: ((err.response || {}).data || {}).message || '请求出现错误，请稍后再试',
-          duration: 3
-        })
-      }
     }
   }
 }

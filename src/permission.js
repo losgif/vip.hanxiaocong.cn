@@ -10,7 +10,7 @@ import { ACCESS_TOKEN } from '@/store/mutation-types'
 
 NProgress.configure({ showSpinner: false }) // NProgress Configuration
 
-const whiteList = ['login', 'register', 'registerResult', 'information', 'roommate', 'goddess', 'single', '403', '404', '500'] // no redirect whitelist
+const whiteList = ['login', 'register', 'registerResult', 'recover', 'information', 'roommate', 'goddess', 'single', '403', '404', '500'] // no redirect whitelist
 const defaultRoutePath = '/dashboard/workplace'
 
 router.beforeEach((to, from, next) => {
@@ -33,13 +33,12 @@ router.beforeEach((to, from, next) => {
         store
           .dispatch('GetInfo')
           .then(res => {
-            const roles = res.result && res.result.role
+            const roles = res.data && res.data.role
             store.dispatch('GenerateRoutes', { roles }).then(() => {
               // 根据roles权限生成可访问的路由表
               // 动态添加可访问路由表
               router.addRoutes(store.getters.addRouters)
               const redirect = decodeURIComponent(from.query.redirect || to.path)
-              console.log(redirect)
               if (to.path === redirect) {
                 // hack方法 确保addRoutes已完成 ,set the replace: true so the navigation will not leave a history record
                 next({ ...to, replace: true })

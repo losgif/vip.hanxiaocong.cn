@@ -151,7 +151,7 @@ import {
 import Clipboard from 'clipboard'
 import StepByStepModal from './modules/StepByStepModal'
 import { schoolApplicationShow } from '@/api/schoolApplication'
-import { requestfailedHandle } from '@/utils/request'
+import { requestFailedHandle } from '@/utils/request'
 
 const statusMap = {
   0: {
@@ -317,7 +317,7 @@ export default {
     schoolApplicationShow(this.$route.params.id).then(res => {
       this.schoolApplication = res.data
     }).catch(e => {
-      requestfailedHandle(e)
+      requestFailedHandle(e)
     })
 
     this.initClipboard()

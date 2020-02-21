@@ -137,7 +137,7 @@ export default {
       this.selectedRows = []
       this.localLoading = true
       const parameter = Object.assign({
-        pageNo: (pagination && pagination.current) ||
+        page: (pagination && pagination.current) ||
           this.showPagination && this.localPagination.current || this.pageNum,
         pageSize: (pagination && pagination.pageSize) ||
           this.showPagination && this.localPagination.pageSize || this.pageSize
@@ -159,7 +159,7 @@ export default {
         result.then(r => {
           this.localPagination = this.showPagination && Object.assign({}, this.localPagination, {
             current: r.current_page, // 返回结果中的当前分页数
-            total: r.totalCount, // 返回结果中的总记录数
+            total: r.total, // 返回结果中的总记录数
             showSizeChanger: this.showSizeChanger,
             pageSize: (pagination && pagination.pageSize) || r.per_page || this.localPagination.pageSize
           }) || false

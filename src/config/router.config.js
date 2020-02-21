@@ -9,7 +9,7 @@ export const asyncRouterMap = [
     path: '/',
     name: 'index',
     component: BasicLayout,
-    meta: { title: '首页' },
+    meta: { title: '首页', roles: [ 'vistor', 'normal-user', 'super-admin' ] },
     redirect: '/dashboard/workplace',
     children: [
       // dashboard
@@ -18,27 +18,42 @@ export const asyncRouterMap = [
         name: 'dashboard',
         redirect: '/dashboard/workplace',
         component: RouteView,
-        meta: { title: '仪表盘', keepAlive: true, icon: bxAnaalyse, permission: [ 'dashboard' ] },
+        meta: { title: '仪表盘', keepAlive: true, icon: bxAnaalyse, roles: [ 'vistor', 'normal-user', 'super-admin' ] },
         children: [
           {
             path: '/dashboard/workplace',
             name: 'Workplace',
             component: () => import('@/views/dashboard/Workplace'),
-            meta: { title: '工作台', keepAlive: true, permission: [ 'dashboard' ] }
+            meta: { title: '工作台', keepAlive: true, roles: [ 'vistor', 'normal-user', 'super-admin' ] }
           },
           {
             path: '/dashboard/analysis',
             name: 'Analysis',
             component: () => import('@/views/dashboard/Analysis'),
             hidden: true,
-            meta: { title: '分析页', keepAlive: false, permission: [ 'dashboard' ] }
+            meta: { title: '分析页', keepAlive: false, roles: [ 'vistor', 'normal-user', 'super-admin' ] }
           },
           {
             path: '/dashboard/test-work',
             name: 'TestWork',
             component: () => import('@/views/dashboard/TestWork'),
             hidden: true,
-            meta: { title: '测试功能', keepAlive: true, permission: [ 'dashboard' ] }
+            meta: { title: '测试功能', keepAlive: true, roles: [ 'vistor', 'normal-user', 'super-admin' ] }
+          }
+        ]
+      },
+      // school
+      {
+        path: '/school',
+        redirect: '/school/my',
+        component: PageView,
+        meta: { title: '公众号管理', icon: 'form', roles: [ 'vistor', 'normal-user', 'super-admin' ] },
+        children: [
+          {
+            path: '/school/my',
+            name: 'SchoolIndex',
+            component: () => import('@/views/school/My'),
+            meta: { title: '我的公众号', keepAlive: true, roles: [ 'vistor', 'normal-user', 'super-admin' ] }
           }
         ]
       },
@@ -48,13 +63,13 @@ export const asyncRouterMap = [
         path: '/application',
         redirect: '/application/my',
         component: PageView,
-        meta: { title: '应用列表', icon: 'form', permission: [ 'application' ] },
+        meta: { title: '应用列表', icon: 'form', roles: ['normal-user', 'super-admin'] },
         children: [
           {
             path: '/application/my',
             name: 'ApplicationIndex',
             component: () => import('@/views/application/My'),
-            meta: { title: '我的应用', keepAlive: true, permission: [ 'application' ] }
+            meta: { title: '我的应用', keepAlive: true, roles: ['normal-user', 'super-admin'] }
           }
         ]
       },
@@ -65,14 +80,14 @@ export const asyncRouterMap = [
         redirect: '/goddess/:id',
         component: PageView,
         hidden: true,
-        meta: { title: '男神女神', icon: 'form', permission: [ 'application' ] },
+        meta: { title: '男神女神', icon: 'form', roles: ['normal-user', 'super-admin'] },
         children: [
           {
             path: '/goddess/:id',
             name: 'GoddessDetail',
             hidden: true,
             component: () => import('@/views/goddess/Detail'),
-            meta: { title: '应用详情', keepAlive: true, permission: [ 'application' ] }
+            meta: { title: '应用详情', keepAlive: true, roles: ['normal-user', 'super-admin'] }
           }
         ]
       },
@@ -83,18 +98,43 @@ export const asyncRouterMap = [
         redirect: '/roommate/:id',
         component: PageView,
         hidden: true,
-        meta: { title: '卖舍友', icon: 'form', permission: [ 'application' ] },
+        meta: { title: '卖舍友', icon: 'form', roles: ['normal-user', 'super-admin'] },
         children: [
           {
             path: '/roommate/:id',
-            name: 'GoddessDetail',
+            name: 'RoommateDetail',
             hidden: true,
             component: () => import('@/views/roommate/Detail'),
-            meta: { title: '应用详情', keepAlive: true, permission: [ 'application' ] }
+            meta: { title: '应用详情', keepAlive: true, roles: ['normal-user', 'super-admin'] }
           }
         ]
       },
-
+      {
+        path: '/admin',
+        redirect: '/admin/dashboard',
+        component: PageView,
+        meta: { title: '管理后台', icon: 'form', roles: [ 'super-admin' ] },
+        children: [
+          {
+            path: '/admin/dashboard',
+            name: 'AdminDashboard',
+            component: () => import('@/views/admin/Dashboard'),
+            meta: { title: '工作台', keepAlive: true, roles: [ 'super-admin' ] }
+          },
+          {
+            path: '/admin/user-list',
+            name: 'UserList',
+            component: () => import('@/views/admin/UserList'),
+            meta: { title: '用户列表', keepAlive: true, roles: [ 'super-admin' ] }
+          },
+          {
+            path: '/admin/school-application-list',
+            name: 'SchoolApplicationList',
+            component: () => import('@/views/admin/SchoolApplicationList'),
+            meta: { title: '应用列表', keepAlive: true, roles: [ 'super-admin' ] }
+          }
+        ]
+      },
       // forms
       {
         path: '/form',
@@ -267,19 +307,19 @@ export const asyncRouterMap = [
         hidden: true,
         redirect: '/account/center',
         name: 'account',
-        meta: { title: '个人页', icon: 'user', keepAlive: true, permission: [ 'user' ] },
+        meta: { title: '个人页', icon: 'user', keepAlive: true, roles: [ 'vistor', 'normal-user', 'super-admin' ] },
         children: [
           {
             path: '/account/center',
             name: 'center',
             component: () => import('@/views/account/center/Index'),
-            meta: { title: '个人中心', keepAlive: true, permission: [ 'user' ] }
+            meta: { title: '个人中心', keepAlive: true, roles: [ 'vistor', 'normal-user', 'super-admin' ] }
           },
           {
             path: '/account/settings',
             name: 'settings',
             component: () => import('@/views/account/settings/Index'),
-            meta: { title: '个人设置', hideHeader: true, permission: [ 'user' ] },
+            meta: { title: '个人设置', hideHeader: true, roles: [ 'vistor', 'normal-user', 'super-admin' ] },
             redirect: '/account/settings/base',
             hideChildrenInMenu: true,
             children: [
@@ -287,31 +327,31 @@ export const asyncRouterMap = [
                 path: '/account/settings/base',
                 name: 'BaseSettings',
                 component: () => import('@/views/account/settings/BaseSetting'),
-                meta: { title: '基本设置', permission: [ 'user' ] }
+                meta: { title: '基本设置', roles: [ 'vistor', 'normal-user', 'super-admin' ] }
               },
               {
                 path: '/account/settings/security',
                 name: 'SecuritySettings',
                 component: () => import('@/views/account/settings/Security'),
-                meta: { title: '安全设置', keepAlive: true, permission: [ 'user' ] }
+                meta: { title: '安全设置', keepAlive: false, roles: [ 'vistor', 'normal-user', 'super-admin' ] }
               },
               {
                 path: '/account/settings/custom',
                 name: 'CustomSettings',
                 component: () => import('@/views/account/settings/Custom'),
-                meta: { title: '个性化设置', keepAlive: true, permission: [ 'user' ] }
+                meta: { title: '个性化设置', keepAlive: true, roles: [ 'vistor', 'normal-user', 'super-admin' ] }
               },
               {
                 path: '/account/settings/binding',
                 name: 'BindingSettings',
                 component: () => import('@/views/account/settings/Binding'),
-                meta: { title: '账户绑定', keepAlive: true, permission: [ 'user' ] }
+                meta: { title: '账户绑定', keepAlive: true, roles: [ 'vistor', 'normal-user', 'super-admin' ] }
               },
               {
                 path: '/account/settings/notification',
                 name: 'NotificationSettings',
                 component: () => import('@/views/account/settings/Notification'),
-                meta: { title: '新消息通知', keepAlive: true, permission: [ 'user' ] }
+                meta: { title: '新消息通知', keepAlive: true, roles: [ 'vistor', 'normal-user', 'super-admin' ] }
               }
             ]
           }
@@ -385,20 +425,20 @@ export const asyncRouterMap = [
     path: '/weixiao',
     name: 'weixiao',
     component: SubmitLayout,
-    meta: { title: '腾讯微笑' },
+    meta: { title: '腾讯微笑', roles: [ 'normal-user', 'super-admin' ] },
     children: [
       {
         path: '/weixiao/goddess',
         component: PageView,
         hidden: true,
-        meta: { title: '男神女神', icon: 'form', permission: [ 'application' ] },
+        meta: { title: '男神女神', icon: 'form', roles: [ 'normal-user', 'super-admin' ] },
         children: [
           {
             path: '/weixiao/goddess/:id',
             name: 'WeixiaoGoddessDetail',
             hidden: true,
             component: () => import('@/views/goddess/Detail'),
-            meta: { title: '应用详情', keepAlive: true, permission: [ 'goddess' ], hiddenHeaderContent: true }
+            meta: { title: '应用详情', keepAlive: true, roles: [ 'normal-user', 'super-admin' ], hiddenHeaderContent: true }
           }
         ]
       },
@@ -406,21 +446,21 @@ export const asyncRouterMap = [
         path: '/weixiao/roommate',
         component: PageView,
         hidden: true,
-        meta: { title: '卖舍友', icon: 'form', permission: [ 'application' ] },
+        meta: { title: '卖舍友', icon: 'form', roles: [ 'normal-user', 'super-admin' ] },
         children: [
           {
             path: '/weixiao/roommate/:id',
             name: 'WeixiaoRoommateDetail',
             hidden: true,
             component: () => import('@/views/roommate/Detail'),
-            meta: { title: '应用详情', keepAlive: true, permission: [ 'roommate' ], hiddenHeaderContent: true }
+            meta: { title: '应用详情', keepAlive: true, roles: [ 'normal-user', 'super-admin' ], hiddenHeaderContent: true }
           }
         ]
       }
     ]
   },
   {
-    path: '*', redirect: '/404', hidden: true
+    path: '*', redirect: '/404', meta: { roles: [ 'vistor', 'normal-user', 'super-admin' ] }, hidden: true
   }
 ]
 
@@ -452,11 +492,6 @@ export const constantRouterMap = [
         name: 'registerResult',
         component: () => import(/* webpackChunkName: "user" */ '@/views/user/RegisterResult'),
         meta: { title: '注册结果' }
-      },
-      {
-        path: 'recover',
-        name: 'recover',
-        component: undefined
       }
     ]
   },

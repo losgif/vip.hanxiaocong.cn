@@ -103,6 +103,7 @@ import { PageView } from '@/layouts'
 import HeadInfo from '@/components/tools/HeadInfo'
 
 import { getRoleList, getServiceList } from '@/api/manage'
+import { requestFailedHandle } from '../../utils/request'
 
 export default {
   name: 'Workplace',
@@ -180,6 +181,10 @@ export default {
         .then(res => {
           this.activities = res.data
           this.activityLoading = false
+        })
+        .catch(e => {
+          this.activityLoading = false
+          requestFailedHandle(e)
         })
     },
     getData () {

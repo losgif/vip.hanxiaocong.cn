@@ -5,7 +5,7 @@
         <div class="header">
           <a href="/">
             <img src="~@/assets/logo.svg" class="logo" alt="logo">
-            <span class="title">Ant Design</span>
+            <span class="title">{{ title }}</span>
           </a>
         </div>
       </div>
@@ -21,11 +21,19 @@
 import RouteView from './RouteView'
 import { mixinDevice } from '@/utils/mixin'
 import GlobalFooter from '@/components/GlobalFooter'
+import { domTitle } from '@/utils/domUtil'
 
 export default {
   name: 'UserLayout',
   components: { RouteView, GlobalFooter },
   mixins: [mixinDevice],
+  props: {
+    title: {
+      type: String,
+      default: domTitle,
+      required: false
+    }
+  },
   mounted () {
     document.body.classList.add('userLayout')
   },
