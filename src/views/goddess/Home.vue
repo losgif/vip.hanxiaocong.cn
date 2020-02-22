@@ -9,7 +9,7 @@
       <div class="content">
         <step1 :form-data="form" v-if="currentTab === 0" @nextStep="nextStep"/>
         <step2 :form-data="form" v-if="currentTab === 1" @nextStep="nextStep" @prevStep="prevStep"/>
-        <step3 v-if="currentTab === 2" @prevStep="prevStep" @finish="finish"/>
+        <step3 v-if="currentTab === 2" @prevStep="prevStep"/>
       </div>
     </a-card>
   </div>
@@ -31,7 +31,7 @@ export default {
   },
   data () {
     return {
-      currentTab: 1,
+      currentTab: 0,
       scrollTop: 0,
       // form
       form: {}
@@ -51,6 +51,16 @@ export default {
       this.form = Object.assign(this.form, values)
 
       if (currentTab === 2) {
+        this.form.person_image = this.form.person_image[0].url
+        this.form.question_image_1 = this.form.question_image_1[0].url
+        this.form.question_image_2 = this.form.question_image_2[0].url
+        this.form.question_image_3 = this.form.question_image_3[0].url
+        this.form.question_image_4 = this.form.question_image_4[0].url
+        this.form.question_image_5 = this.form.question_image_5[0].url
+        this.form.question_image_6 = this.form.question_image_6[0].url
+        this.form.question_image_7 = this.form.question_image_7[0].url
+        this.form.question_image_8 = this.form.question_image_8[0].url
+        this.form.question_image_9 = this.form.question_image_9[0].url
         this.form.school_application_id = this.$route.params.id
         this.$message.info(`正在上传信息`)
 
@@ -72,9 +82,6 @@ export default {
 
       this.form = Object.assign(this.form, values)
       this.currentTab = currentTab
-    },
-    finish () {
-      this.currentTab = 0
     },
     backTop () {
       const timer = setInterval(() => {

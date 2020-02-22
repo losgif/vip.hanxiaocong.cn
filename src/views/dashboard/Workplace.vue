@@ -23,9 +23,9 @@
             :loading="loading"
             style="margin-bottom: 24px;"
             :bordered="false"
-            title="我的应用"
+            title="我的公众号"
             :body-style="{ padding: 0 }">
-            <a slot="extra" @click="showDeveloping">添加应用</a>
+            <a slot="extra" @click="showDeveloping">添加</a>
             <div>
               <a-card-grid class="project-card-grid" :key="i" v-for="(item, i) in applications">
                 <a-card :bordered="false" :body-style="{ padding: 0 }">
@@ -74,7 +74,7 @@
           :xs="24">
           <a-card title="快速开始 / 便捷导航" style="margin-bottom: 24px" :bordered="false" :body-style="{padding: 0}">
             <div class="item-group">
-              <router-link to="/application">我的应用</router-link>
+              <router-link to="/application">我的公众号</router-link>
               <a-button @click="showDeveloping" size="small" type="primary" ghost icon="plus">添加</a-button>
             </div>
           </a-card>

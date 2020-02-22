@@ -9,7 +9,7 @@
       <div class="content">
         <step1 :form-data="form" v-if="currentTab === 0" @nextStep="nextStep"/>
         <step2 :form-data="form" v-if="currentTab === 1" @nextStep="nextStep" @prevStep="prevStep"/>
-        <step3 v-if="currentTab === 2" @prevStep="prevStep" @finish="finish"/>
+        <step3 v-if="currentTab === 2" @prevStep="prevStep"/>
       </div>
     </a-card>
   </div>
@@ -20,6 +20,7 @@ import Step1 from './Step1'
 import Step2 from './Step2'
 import Step3 from './Step3'
 import { uploadInfo } from '@/api/upload'
+import { requestFailedHandle } from '@/utils/request'
 
 export default {
   name: 'StepForm',
@@ -38,6 +39,7 @@ export default {
   },
   mounted () {
     this.$store.dispatch('GetSite', this.$route.params.id)
+
     window.addEventListener('scroll', this.scrollToTop)
   },
   destroyed () {
@@ -49,18 +51,29 @@ export default {
       this.form = Object.assign(this.form, values)
 
       if (currentTab === 2) {
-        this.form.school_id = this.$route.params.id
+        this.form.person_image = this.form.person_image[0].url
+        this.form.question_image_1 = this.form.question_image_1[0].url
+        this.form.question_image_2 = this.form.question_image_2[0].url
+        this.form.question_image_3 = this.form.question_image_3[0].url
+        this.form.question_image_4 = this.form.question_image_4[0].url
+        this.form.question_image_5 = this.form.question_image_5[0].url
+        this.form.question_image_6 = this.form.question_image_6[0].url
+        this.form.question_image_7 = this.form.question_image_7[0].url
+        this.form.question_image_8 = this.form.question_image_8[0].url
+
+        if (this.form.question_image_9.length !== 0) {
+          this.form.question_image_9 = this.form.question_image_9[0].url
+        }
+
+        this.form.school_application_id = this.$route.params.id
+        this.$message.info(`正在上传信息`)
 
         uploadInfo(this.form)
           .then(res => {
-            if (res.code === 200) {
-              this.currentTab = currentTab
-            } else {
-              this.$message.error(`系统错误,上传失败`)
-            }
+            this.currentTab = currentTab
           })
           .catch(e => {
-            this.$message.error(`系统错误,上传失败`)
+            requestFailedHandle(e)
           })
       } else {
         this.backTop()
@@ -73,9 +86,6 @@ export default {
 
       this.form = Object.assign(this.form, values)
       this.currentTab = currentTab
-    },
-    finish () {
-      this.currentTab = 0
     },
     backTop () {
       const timer = setInterval(() => {

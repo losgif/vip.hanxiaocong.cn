@@ -19,3 +19,11 @@ export function uploadImage (data) {
     data: data
   })
 }
+
+export function uploadFetchToken (data) {
+  return axios({
+    url: api.Upload + '/fetchToken',
+    method: 'post',
+    data: data
+  })
+}

@@ -121,9 +121,11 @@
               getValueFromEvent: normFile,
             },
           ]"
-          name="image"
+          name="file"
           @change="handleChange"
-          action="/api/upload/image"
+          action="https://up-z0.qiniup.com/"
+          :data="() => this.getUploadToken()"
+          :beforeUpload="beforeUpload"
           list-type="picture"
         >
           <a-button> <a-icon type="upload" /> 点击上传个人照片 </a-button>
@@ -137,13 +139,17 @@
 </template>
 
 <script>
+import { requestFailedHandle } from '@/utils/request'
+import { uploadFetchToken } from '@/api/upload'
+
 export default {
   name: 'Step1',
   data () {
     return {
       labelCol: { lg: { span: 24 }, sm: { span: 24 } },
       wrapperCol: { lg: { span: 24 }, sm: { span: 24 } },
-      form: this.$form.createForm(this)
+      form: this.$form.createForm(this),
+      token: ''
     }
   },
   props: {
@@ -153,11 +159,31 @@ export default {
     }
   },
   mounted () {
+    this.beforeUpload()
+
     setTimeout(() => {
       this.form.setFieldsValue(this.formData)
     }, 100)
   },
   methods: {
+    getUploadToken () {
+      return {
+        token: this.token
+      }
+    },
+    async beforeUpload (file) {
+      await this.fetchUploadToken(file)
+
+      return true
+    },
+    async fetchUploadToken () {
+      uploadFetchToken().then(res => {
+        this.token = res.data.token
+        this.domain = res.data.domain
+      }).catch(e => {
+        requestFailedHandle(e)
+      })
+    },
     normFile (e) {
       let fileList = [...e.fileList]
 
@@ -167,9 +193,9 @@ export default {
 
       // 2. read from response and show file link
       fileList = fileList.map(file => {
-        if (file.response !== undefined && file.response.code === 200) {
+        if (file.response !== undefined && file.response.key !== undefined) {
           // Component will show file.url as link
-          file.url = file.response.data
+          file.url = this.domain + file.response.key
         }
         return file
       })
@@ -180,16 +206,16 @@ export default {
     },
     handleChange (info) {
       if (info.file.status === 'done' || info.file.status === 'error') {
-        if (info.file.response.code === 200) {
+        if (info.file.response.key !== undefined) {
           this.$message.success(`${info.file.name} 素材上传成功`, 3)
         } else {
-          this.$message.error('上传失败！' + info.file.response.message, 3)
+          this.$message.error('上传失败！', 3)
         }
       }
     },
     validatorFile (rule, value, callback) {
       try {
-        if (value.length !== 0 && value[0].response !== undefined && value[0].response.code !== 200) {
+        if (value.length !== 0 && value[0].response !== undefined && value[0].response.key === undefined) {
           throw new Error(value[0].response.message)
         }
         callback()
@@ -202,6 +228,7 @@ export default {
       // 先校验，通过表单校验后，才进入下一步
       validateFields((err, values) => {
         if (!err) {
+          values.person_image = values.person_image[0].url
           this.$emit('nextStep', 1, values)
         }
       })

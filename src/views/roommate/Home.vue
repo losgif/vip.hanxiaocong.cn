@@ -8,7 +8,7 @@
       </a-steps>
       <div class="content">
         <step1 :form-data="form" v-if="currentTab === 0" @nextStep="nextStep"/>
-        <step2 v-if="currentTab === 1" @prevStep="prevStep" @finish="finish"/>
+        <step2 v-if="currentTab === 1" @prevStep="prevStep"/>
       </div>
     </a-card>
   </div>
@@ -68,9 +68,6 @@ export default {
 
       this.form = Object.assign(this.form, values)
       this.currentTab = currentTab
-    },
-    finish () {
-      this.currentTab = 0
     },
     backTop () {
       const timer = setInterval(() => {

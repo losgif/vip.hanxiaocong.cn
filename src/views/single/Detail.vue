@@ -63,13 +63,13 @@
 
     <div class="table-operator">
       <a-button v-if="$route.meta.hiddenHeaderContent">
-        <router-link target="_blank" :to="'/goddess/' + $route.params.id">跳转到浏览器打开此页面</router-link>
+        <router-link target="_blank" :to="'/single/' + $route.params.id">跳转到浏览器打开此页面</router-link>
       </a-button>
       <a-button type="primary">
-        <router-link target="_blank" :to="'/goddess/home/' + $route.params.id">打开信息提交页面</router-link>
+        <router-link target="_blank" :to="'/single/home/' + $route.params.id">打开信息提交页面</router-link>
       </a-button>
       <!-- <a-button type="dashed">
-        <router-link :to="'/goddess/setting/' + $route.params.id">应用配置</router-link>
+        <router-link :to="'/single/setting/' + $route.params.id">应用配置</router-link>
       </a-button> -->
       <a-dropdown v-action:edit v-if="selectedRowKeys.length > 0">
         <a-menu slot="overlay">

@@ -109,6 +109,23 @@ export const asyncRouterMap = [
           }
         ]
       },
+      // single
+      {
+        path: '/single',
+        redirect: '/single/:id',
+        component: PageView,
+        hidden: true,
+        meta: { title: '单身专场', icon: 'form', roles: ['normal-user', 'super-admin'] },
+        children: [
+          {
+            path: '/single/:id',
+            name: 'SingleDetail',
+            hidden: true,
+            component: () => import('@/views/single/Detail'),
+            meta: { title: '公众号详情', keepAlive: true, roles: ['normal-user', 'super-admin'] }
+          }
+        ]
+      },
       {
         path: '/admin',
         redirect: '/admin/dashboard',
@@ -453,6 +470,21 @@ export const asyncRouterMap = [
             name: 'WeixiaoRoommateDetail',
             hidden: true,
             component: () => import('@/views/roommate/Detail'),
+            meta: { title: '公众号详情', keepAlive: true, roles: [ 'normal-user', 'super-admin' ], hiddenHeaderContent: true }
+          }
+        ]
+      },
+      {
+        path: '/weixiao/single',
+        component: PageView,
+        hidden: true,
+        meta: { title: '单身专场', icon: 'form', roles: [ 'normal-user', 'super-admin' ] },
+        children: [
+          {
+            path: '/weixiao/single/:id',
+            name: 'WeixiaoSingleDetail',
+            hidden: true,
+            component: () => import('@/views/single/Detail'),
             meta: { title: '公众号详情', keepAlive: true, roles: [ 'normal-user', 'super-admin' ], hiddenHeaderContent: true }
           }
         ]

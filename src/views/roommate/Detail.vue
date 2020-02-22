@@ -123,7 +123,7 @@
     <a-modal
       title="生成样式"
       v-model="visible"
-      width="80%"
+      width="600px"
       :bodyStyle="{height: '60vh'}"
       :maskClosable="false"
       :footer="footer">

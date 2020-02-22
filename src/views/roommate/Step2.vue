@@ -2,9 +2,6 @@
   <div>
     <a-form style="margin: 40px auto 0;">
       <result title="提交成功" :is-success="true" description="请耐心等待审核" style="max-width: 560px;">
-        <div slot="action" class="center">
-          <a-button type="primary" @click="finish">再次提交</a-button>
-        </div>
       </result>
     </a-form>
   </div>
@@ -21,11 +18,6 @@ export default {
   data () {
     return {
       loading: false
-    }
-  },
-  methods: {
-    finish () {
-      this.$emit('finish')
     }
   }
 }
