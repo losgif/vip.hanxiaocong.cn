@@ -37,7 +37,7 @@
             :beforeUpload="beforeUpload"
             list-type="picture"
           >
-            <a-button> <a-icon type="upload" /> 点击上传图片 </a-button>
+            <a-button> <a-icon type="upload" /> 点击上传一张照片 </a-button>
           </a-upload>
         </div>
       </a-form-item>
@@ -73,7 +73,7 @@
             :beforeUpload="beforeUpload"
             list-type="picture"
           >
-            <a-button> <a-icon type="upload" /> 点击上传图片 </a-button>
+            <a-button> <a-icon type="upload" /> 点击上传一张照片 </a-button>
           </a-upload>
         </div>
       </a-form-item>
@@ -109,7 +109,7 @@
             :beforeUpload="beforeUpload"
             list-type="picture"
           >
-            <a-button> <a-icon type="upload" /> 点击上传图片 </a-button>
+            <a-button> <a-icon type="upload" /> 点击上传一张照片 </a-button>
           </a-upload>
         </div>
       </a-form-item>
@@ -145,7 +145,7 @@
             :beforeUpload="beforeUpload"
             list-type="picture"
           >
-            <a-button> <a-icon type="upload" /> 点击上传图片 </a-button>
+            <a-button> <a-icon type="upload" /> 点击上传一张照片 </a-button>
           </a-upload>
         </div>
       </a-form-item>
@@ -181,13 +181,13 @@
             :beforeUpload="beforeUpload"
             list-type="picture"
           >
-            <a-button> <a-icon type="upload" /> 点击上传图片 </a-button>
+            <a-button> <a-icon type="upload" /> 点击上传一张照片 </a-button>
           </a-upload>
         </div>
       </a-form-item>
       <a-divider />
       <a-form-item
-        label="6、希望未来的他是怎样的？"
+        label="6、希望未来的Ta是怎样的？"
         :labelCol="labelCol"
         :wrapperCol="wrapperCol"
         class="stepFormText"
@@ -217,7 +217,7 @@
             :beforeUpload="beforeUpload"
             list-type="picture"
           >
-            <a-button> <a-icon type="upload" /> 点击上传图片 </a-button>
+            <a-button> <a-icon type="upload" /> 点击上传一张照片 </a-button>
           </a-upload>
         </div>
       </a-form-item>
@@ -253,7 +253,7 @@
             :beforeUpload="beforeUpload"
             list-type="picture"
           >
-            <a-button> <a-icon type="upload" /> 点击上传图片 </a-button>
+            <a-button> <a-icon type="upload" /> 点击上传一张照片 </a-button>
           </a-upload>
         </div>
       </a-form-item>
@@ -289,7 +289,7 @@
             :beforeUpload="beforeUpload"
             list-type="picture"
           >
-            <a-button> <a-icon type="upload" /> 点击上传图片 </a-button>
+            <a-button> <a-icon type="upload" /> 点击上传一张照片 </a-button>
           </a-upload>
         </div>
       </a-form-item>
@@ -325,12 +325,12 @@
             :beforeUpload="beforeUpload"
             list-type="picture"
           >
-            <a-button> <a-icon type="upload" /> 点击上传图片 </a-button>
+            <a-button> <a-icon type="upload" /> 点击上传一张照片 </a-button>
           </a-upload>
         </div>
       </a-form-item>
       <a-form-item class="dropbox">
-        <a-button :loading="loading" type="primary" @click="nextStep">提交</a-button>
+        <a-button :loading="loading" type="primary" @click="nextStep">提交报名</a-button>
         <a-button style="margin-left: 8px" @click="prevStep">上一步</a-button>
       </a-form-item>
     </a-form>
