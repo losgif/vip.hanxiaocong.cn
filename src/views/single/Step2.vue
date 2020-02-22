@@ -25,7 +25,7 @@
               'question_image_1',
               {
                 initialValue: [],
-                rules: [{validator: validatorFile}],
+                rules: [{required: true, message: '请上传一张个人照片'}, {validator: validatorFile}],
                 valuePropName: 'fileList',
                 getValueFromEvent: normFile,
               },
@@ -61,7 +61,7 @@
               'question_image_2',
               {
                 initialValue: [],
-                rules: [{validator: validatorFile}],
+                rules: [{required: true, message: '请上传一张个人照片'}, {validator: validatorFile}],
                 valuePropName: 'fileList',
                 getValueFromEvent: normFile,
               },
@@ -97,7 +97,7 @@
               'question_image_3',
               {
                 initialValue: [],
-                rules: [{validator: validatorFile}],
+                rules: [{required: true, message: '请上传一张个人照片'}, {validator: validatorFile}],
                 valuePropName: 'fileList',
                 getValueFromEvent: normFile,
               },
@@ -133,7 +133,7 @@
               'question_image_4',
               {
                 initialValue: [],
-                rules: [{validator: validatorFile}],
+                rules: [{required: true, message: '请上传一张个人照片'}, {validator: validatorFile}],
                 valuePropName: 'fileList',
                 getValueFromEvent: normFile,
               },
@@ -169,7 +169,7 @@
               'question_image_5',
               {
                 initialValue: [],
-                rules: [{validator: validatorFile}],
+                rules: [{required: true, message: '请上传一张个人照片'}, {validator: validatorFile}],
                 valuePropName: 'fileList',
                 getValueFromEvent: normFile,
               },
@@ -205,7 +205,7 @@
               'question_image_6',
               {
                 initialValue: [],
-                rules: [{validator: validatorFile}],
+                rules: [{required: true, message: '请上传一张个人照片'}, {validator: validatorFile}],
                 valuePropName: 'fileList',
                 getValueFromEvent: normFile,
               },
@@ -241,7 +241,7 @@
               'question_image_7',
               {
                 initialValue: [],
-                rules: [{validator: validatorFile}],
+                rules: [{required: true, message: '请上传一张个人照片'}, {validator: validatorFile}],
                 valuePropName: 'fileList',
                 getValueFromEvent: normFile,
               },
@@ -277,7 +277,7 @@
               'question_image_8',
               {
                 initialValue: [],
-                rules: [{validator: validatorFile}],
+                rules: [{required: true, message: '请上传一张个人照片'}, {validator: validatorFile}],
                 valuePropName: 'fileList',
                 getValueFromEvent: normFile,
               },
@@ -313,7 +313,7 @@
               'question_image_9',
               {
                 initialValue: [],
-                rules: [{validator: validatorFile}],
+                rules: [{required: true, message: '请上传一张个人照片'}, {validator: validatorFile}],
                 valuePropName: 'fileList',
                 getValueFromEvent: normFile,
               },
