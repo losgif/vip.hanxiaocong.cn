@@ -1,6 +1,7 @@
 <template>
   <div class="user-wrapper">
     <div class="content-box">
+      <notice-icon class="action"/>
       <a-dropdown>
         <span class="action ant-dropdown-link user-dropdown-menu">
           <span>{{ nickname }}</span>

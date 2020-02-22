@@ -5,7 +5,7 @@
         <div class="header">
           <a href="/">
             <img src="~@/assets/logo.svg" class="logo" alt="logo">
-            <span class="title">{{ title }}</span>
+            <span class="title">小葱公众号助手</span>
           </a>
         </div>
       </div>

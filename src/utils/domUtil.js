@@ -16,4 +16,4 @@ export const setDocumentTitle = function (title) {
   }
 }
 
-export const domTitle = '小葱公众号助手'
+export const domTitle = '公众号助手'

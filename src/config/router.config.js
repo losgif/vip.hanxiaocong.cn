@@ -1,7 +1,7 @@
 // eslint-disable-next-line
 import { UserLayout, BasicLayout, RouteView, SubmitLayout, PageView } from '@/layouts'
 import { bxAnaalyse } from '@/core/icons'
-import { BlankLayout } from '@/layouts/index'
+import { InformationLayout } from '@/layouts/index'
 
 export const asyncRouterMap = [
 
@@ -531,7 +531,7 @@ export const constantRouterMap = [
   {
     path: '/information',
     hidden: true,
-    component: BlankLayout,
+    component: InformationLayout,
     children: [
       {
         path: '/information/:id/:token/:type',
@@ -551,7 +551,7 @@ export const constantRouterMap = [
         path: '/roommate/home/:id',
         name: 'roommate',
         component: () => import('@/views/roommate/Home'),
-        meta: { title: '卖舍友' }
+        meta: { title: '卖舍友 - 报名入口' }
       }
     ]
   },
@@ -565,7 +565,7 @@ export const constantRouterMap = [
         path: '/goddess/home/:id',
         name: 'goddess',
         component: () => import('@/views/goddess/Home'),
-        meta: { title: '男神女神' }
+        meta: { title: '男神女神 - 报名入口' }
       }
     ]
   },
@@ -579,7 +579,7 @@ export const constantRouterMap = [
         path: '/single/home/:id',
         name: 'single',
         component: () => import('@/views/single/Home'),
-        meta: { title: '单身' }
+        meta: { title: '单身专场 - 报名入口' }
       }
     ]
   },
