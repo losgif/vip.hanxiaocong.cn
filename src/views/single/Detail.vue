@@ -225,11 +225,11 @@ export default {
           scopedSlots: { customRender: 'person_image' }
         },
         {
-          title: '学校',
+          title: '教育背景',
           dataIndex: 'extra.university'
         },
         {
-          title: '座右铭',
+          title: '工作类型',
           dataIndex: 'extra.department',
           scopedSlots: { customRender: 'department' }
         },
@@ -243,15 +243,15 @@ export default {
           dataIndex: 'extra.constellation'
         },
         {
-          title: '产地',
+          title: '籍贯',
           dataIndex: 'extra.origin'
         },
         {
-          title: '微博',
+          title: '期望发展城市',
           dataIndex: 'extra.weibo'
         },
         {
-          title: '特长',
+          title: '目前活动范围',
           dataIndex: 'extra.specialty',
           scopedSlots: { customRender: 'specialty' }
         },

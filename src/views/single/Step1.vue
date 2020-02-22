@@ -37,7 +37,7 @@
         :labelCol="labelCol"
         :wrapperCol="wrapperCol"
       >
-        <a-input placeholder="姓名或昵称" v-decorator="['name', { initialValue: '', rules: [{required: true, message: '请填写姓名'}] }]"/>
+        <a-input placeholder="请输入姓名或昵称" v-decorator="['name', { initialValue: '', rules: [{required: true, message: '请填写姓名'}] }]"/>
       </a-form-item>
       <a-form-item
         label="性别"
@@ -61,14 +61,14 @@
         :labelCol="labelCol"
         :wrapperCol="wrapperCol"
       >
-        <a-input placeholder="在读或毕业院校的全称及相应学历~" v-decorator="['university', { initialValue: '', rules: [{required: true, message: '请填写学校'}] }]"/>
+        <a-input placeholder="必须写清在读或毕业院校的全称及相应学历~" v-decorator="['university', { initialValue: '', rules: [{required: true, message: '请填写学校'}] }]"/>
       </a-form-item>
       <a-form-item
         label="工作类型"
         :labelCol="labelCol"
         :wrapperCol="wrapperCol"
       >
-        <a-input placeholder="例：互联网运营／公务员／学生／创业或者其他" v-decorator="['department', { initialValue: '', rules: [{required: true, message: '请填写工作类型'}] }]"/>
+        <a-input placeholder="例：互联网／公务员／创业／学生或者其他" v-decorator="['department', { initialValue: '', rules: [{required: true, message: '请填写工作类型'}] }]"/>
       </a-form-item>
       <a-form-item
         label="身高"
@@ -100,11 +100,11 @@
         </a-select>
       </a-form-item>
       <a-form-item
-        label="产地"
+        label="籍贯"
         :labelCol="labelCol"
         :wrapperCol="wrapperCol"
       >
-        <a-input placeholder="填写你的出生地或者成长地" v-decorator="['origin', { initialValue: '', rules: [{required: true, message: '请填写产地'}] }]"/>
+        <a-input placeholder="填写你的出生地或者成长地" v-decorator="['origin', { initialValue: '', rules: [{required: true, message: '请填写籍贯'}] }]"/>
       </a-form-item>
       <a-form-item
         label="期望发展城市"
@@ -130,7 +130,7 @@
             'person_image',
             {
               initialValue: [],
-              rules: [{required: true, message: '请上传个人照片'}, {validator: validatorFile}],
+              rules: [{required: true, message: '请上传一张个人照片'}, {validator: validatorFile}],
               valuePropName: 'fileList',
               getValueFromEvent: normFile,
             },
