@@ -2,7 +2,7 @@
   <div>
     <div class="wrapper">
       <h1>注意事项</h1>
-      <p>本功能为娱乐目的，如对您的生活造成了困扰，请联系<a href="mailto:losgif@gmail.com">losgif@gmail.com</a>删除联系方式</p>
+      <p>本功能为娱乐目的，如对您的生活造成了困扰，请联系本公众号客服删除联系方式</p>
       <div class="container">
         <div class="copy">
           <h3>联系方式 <span><i class="fa fa-hand-peace-o"></i></span></h3>

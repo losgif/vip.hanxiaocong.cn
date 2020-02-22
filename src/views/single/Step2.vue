@@ -313,7 +313,7 @@
               'question_image_9',
               {
                 initialValue: [],
-                rules: [{required: true, message: '请上传一张个人照片'}, {validator: validatorFile}],
+                rules: [{validator: validatorFile}],
                 valuePropName: 'fileList',
                 getValueFromEvent: normFile,
               },
